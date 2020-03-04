@@ -1,5 +1,5 @@
 # learning_python
-# ceshi
+
 * 第一项
     > 菜鸟教程  
     > 学的不仅是技术更是梦想
@@ -102,12 +102,5 @@ _   下划线
 !   感叹号
 
 
-<font size=2>  你好  
-<font face="黑体">我是黑体字</font>
-<font face="微软雅黑">我是微软雅黑</font>
-<font face="STCAIYUN">我是华文彩云</font>
-<font color=#0099ff size=2 face="黑体">color=#0099ff size=7 face="黑体"</font>
-<font color=#00ffff size=2>color=#00ffff</font>
-<font color=gray size=2>color=gray</font>
 
 
