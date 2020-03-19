@@ -1,20 +1,22 @@
-row = int(input('请输入行数： '))
-for i in range(row):
-    for _ in range(i + 1):
-        print('*', end='')  # end='' 表示空格换行
-    print()
+#寻找100到1000之间的水仙花数，用循环最好
+"""
+import math
+from random import randint
+x = randint(100, 1000)
+a = x // 100   #取百位数字
+b = (x - a * 100) // 10   #取十位数字
+c = x % 100 % 10   #取各位数字
 
-for i in range(row):
-    for j in range(row):
-        if j < row -i -1:
-            print(' ', end='')
-        else:
-            print('*', end='')
-    print()
+#if x == a ** 3 + b ** 3 + c ** 3:
+print(x, a, b, c)
+while False:
+    for num in x
+"""
+for num in range(100, 999):
+    low = num % 10
+    mid = num // 10 % 10
+    high = num // 100
+    if num == low ** 3 + mid ** 3 + high ** 3:
+        print(num)
 
-for i in range(row):
-    for _ in range(row -i -1):
-        print(' ', end='')
-    for _ in range(2 * i +1):
-        print('*', end='')
-    print()
+
