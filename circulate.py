@@ -205,11 +205,87 @@ for num in range(100, 999):
     if num == low ** 3 + mid ** 3 + high ** 3:
         print(num)
     
+#百钱百鸡:假设公鸡x,母鸡y,鸡仔3x,先用数学的思维写出公式
+#3i + 5a + (100-i-a)/3 = 100  ---> 8i + 14a = 200 --> 4i + 7a = 100 
+
+for i in range(0, 100):  # i是公鸡数量
+    for a in range(0, 101): # a是母鸡数量
+        if 4*i + 7*a == 100 and 100 - i - a >=0:
+            print('公鸡',a,'只, 母鸡',i,'只','小鸡',100-i-a,'只')
 
 
+#找出范围类的完美数：完美数是除自身外其他所有因子的和正好等于这个数本身的数
+import math
+
+for num in range(1, 10000):   #定义数字范围
+    sum = 0   #定时初始值
+    for factor in range(1, int(math.sqrt(num)) + 1):  #定义因子
+        if num % factor == 0:  #如果数字能被因子整除
+            sum += factor   #则初始值重新赋值为：因子加sum
+            if factor > 1 and num / factor != factor:  #如果因子大于1且数字除以因子不等于因子
+                sum += num / factor  #则重新复制sum为数字除以因子的结果
+    if sum == num:
+        print(num)
+
+#求范围内的素数，也就是质数；除了自己和1以外没有其他因子(因数)
+import math
+
+for num in range(2, 100):
+    is_prime = True
+    for factor in range(2, int(math.sqrt(num)) + 1):
+        if num % factor == 0:  #能被因子整除
+            is_prime = False
+            break
+    if is_prime:
+        print(num, end=' ')  #每次输出之间空一格
+
+#掷骰子游戏
+from random import randint
+
+money = 1000
+while money > 0:  #如果资产大于0
+    print('你的总资产为：', money)
+    needs_go_on = False  #不继续
+    while True:
+        debt = int(input('请下注： '))  #下注的筹码
+        if debt > 0 and debt <= money:
+            break
+    first = randint(1, 6) + randint(1, 6)  #第一次摇出的点数
+    print('玩家摇出了%d点' % first)
+    if first == 7 or first == 1:
+        print('玩家胜!')
+        money += debt
+    elif first == 2 or first == 3 or first == 12:
+        print('庄家胜!')
+        money -= debt
+    else:
+        needs_go_on = True  # 继续
+    
+    while needs_go_on:  #如果继续玩
+        current = randint(1, 6) + randint(1, 6)  #当前摇出的点数
+        print('玩家摇出了%d' % current)
+        if current == 7:
+            print('庄家胜!')
+            money -= debt
+            needs_go_on = False
+        elif current == first:
+            print('玩家胜!')
+            money += debt
+            needs_go_on = False
+print('你破产了，游戏结束!')
 
 
-
+#斐波那契数列：即从0开始，每个数都等于前面2个数之和
+#输出斐波拉契数列的前20个数
+a, b = 0, 1  #
+"""  #方法1
+while a < 3000:
+    print(a)
+    a, b = b, a+b
+"""
+for _ in range(20):
+    (a, b) = (b, a + b) #每个数都等于前面2个数之和
+    print(a, end=' ')  # 输出a和空格，循环输出
 
 
 
