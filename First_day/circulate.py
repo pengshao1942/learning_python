@@ -147,14 +147,14 @@ for i in range(1, 10):
         print('%d*%d=%d' % (i, j, i * j),end='\t')  #一个%d代表后面的一个变量;end='\t'表示换行
     print()  #打印一个空的，形成九九乘法表的层叠
 
-#输入一个数判断是不是素数
+#输入一个数判断是不是素数，素数就是质数
 from math import sqrt
 
 Number = int(input('请输入一个正整数: '))
-End = int(sqrt(Number))
+End = int(sqrt(Number)) #开平方根，取整,就可判断是否有其他因子
 is_prime = True
-for x in range(2, End + 1):
-    if Number % x == 0:
+for x in range(2, End + 1):  
+    if Number % x == 0:  #取余数，是否能被2整除
         is_prime = False
         break
 if is_prime and Number != 1:
@@ -169,17 +169,16 @@ if x < y:
 #if x > y:   #都可以
     x, y = y, x
 for factor in range(x, 0, -1):
-    if x % factor == 0 and y % factor == 0:  #计算最大公约数；即同时能x和y整除
+    if x % factor == 0 and y % factor == 0:  #计算最大公约数；即同时能被x和y整除
         print('%d和%d的最大公约数是%d' % (x, y, factor))
         print('%d和%d的最小公倍数是%d' % (x, y, x * y // factor))
         break
 
 #打印各种三角形：朝右的、朝左的、堆积的
-
 row = int(input('请输入行数： '))
 for i in range(row):
     for _ in range(i + 1):
-        print('*', end='')  # end='' 表示空格换行
+        print('*', end='')  # end='' 表示换行
     print()
 
 for i in range(row):
@@ -199,8 +198,8 @@ for i in range(row):
 
 #打印出100到999之间的水仙花数
 for num in range(100, 999):
-    low = num % 10
-    mid = num // 10 % 10
+    low = num % 10  #取余数就是最小位数字
+    mid = num // 10 % 10  #先取除10的除数，再取除数除以10的余数，得中位数字
     high = num // 100
     if num == low ** 3 + mid ** 3 + high ** 3:
         print(num)
