@@ -5,8 +5,8 @@
 '''
 '''
 两种导入模块方法的区别：
-第一种import语句导入整个模块内的所有成员(包括变量、函数、类等)；第二种import语句只导入模块内的指定成员
-(除非使用： from模块名 import * ，但不推荐这种语法)
+第一种import语句导入整个模块内的所有成员(包括变量、函数、类等)；
+第二种import语句只导入模块内的指定成员(除非使用： from 模块名 import * ，但不推荐这种语法)
 当使用第一种import语句导入模块中的成员时，必须添加模块名或模块别名前缀；当使用第二种import语句导入模块
 中的成员时，无须使用任何前缀，直接使用成员名或成员别名即可
 '''
@@ -155,6 +155,8 @@ source .bash_profile
 my_list: 保存列表的变量
 print_triangle: 打印由星号组成的三角形的函数
 '''
+
+"""
 my_list = ['Python', 'Kotlin', 'Swift']
 def print_triangle(n):
     '''打印由星号组成的一个三角形'''
@@ -171,6 +173,7 @@ def test_print_triangle():
     print_triangle(7)
 if __name__ == '__main__':
     test_print_triangle()
+"""
 
 #将此模块放在 lib\site-packages 路径下，相当于为Python拓展了一个print_shape模块，任何程序都使用该模块
 #在交互解释器中输入如下： 会输出该模块的功能信息
@@ -185,4 +188,163 @@ if __name__ == '__main__':
 该文件是Python为模块编译生成的字节码，用于提升该模块的运行效率
 '''
 
+#默认情况下，使用 'from 模块名 import' 这样的语句来导入模块，程序会导入该模块中所有不以下划线开头的程序单元
+# 借助于模块的 __all__ 变量，将变量的值设置成一个列表，只有该列表中的程序单元才会被暴露出来
+# 案例：定义一个包含 __all__ 变量的模块
+'''
+'测试__all__变量的模块' 
+
+def hello():
+    print("Hello, Python")
+def world():
+    print("Python World is funny")
+def test():
+    print('--test--')
+
+#定义__all__变量，默认只导入hello和world两个程序单元
+__all__ = ['hello', 'world']
+'''
+
+#导入all_module 模块中所有的成员
+'''
+from all_module import *
+hello()
+world()
+#test()  #因为使用了__all__变量，故没有列出的test就没有被导入进来，此时调用会报错
+'''
+
+#使用__all__变量的好处是当一个大模块中包含了大量其他程序不需要使用的变量、函数和类时，通过__all__变量即可把它们自动过滤掉
+#使用模块内 __all__ 列表之外的程序单元：
+'''
+1.使用 "import模块名" 来导入模块。通过模块名前缀或模块别名前缀来调用模块内的成员
+2.使用 "from 模块名 import 程序单元" 来导入指定程序单元。即使想导入的程序单元没有位于__all__列表中，也依然可以导入
+'''
+
+
+
+
+#包：是为了更好地管理多个模块源文件，避免单个模块源文件包含太多的程序单元而变的大而臃肿，不利于模块化开发
+#包就是一个文件夹，该文件夹下包含了一个 __init__.py 文件，该文件夹可用于包含多个模块源文件
+#包的本质依然是模块，包也可用于包含包pip,如安装了一个包后，可在 lib、site-packages目录下找到这个包文件夹，文件夹里可能还会包含子包文件夹
+
+#定义包
+'''
+1.创建一个文件夹，该文件夹的名字就是该包的包名
+2.在该文件夹内添加一个 __init__.py 文件即可
+'''
+
+#例如：创建一个包文件夹、其内的 __init__.py 文件内容如下
+'''
+这是学习包的第一个示例
+
+print('this is first_package')
+'''
+
+#包被导入后，会在包目录下生成一个 __pycache__ 文件夹，并在该文件夹内为包生成一个 __init__.cpython-python版本号.pyc的文件
+#导入包就相当于导入该包下的 __init__.py 文件，完全可在 __init__.py 文件中定义变量、函数、类等程序单元
+#__init__.py 文件的主要作用就是导入该包内的其他模块
+
+
+
+#导入包内成员(下面会叙述此方法的弊端，引入包内 __init__.py 文件的作用)
+'''
+#导入 fk_package 包，实际上就是导入包下的 __init__.py 文件
+import fk_package
+
+#导入fk_package包下的print_shape模块，实际上就是导入fk_package目录下的print_shape.py
+import fk_package.print_shape   #程序访问print_shape.py的程序单元需要添加 fk_package.print_shape 前缀 
+
+#导入 fk_package 包下的billing模块，实际上就是导入 fk_package 目录下的 billing.py 
+from fk_package import billing  #程序访问 billing.py 的程序单元，需要添加 billing前缀
+
+#导入 fk_package 包下的 arithmetic_chart 模块，实际上就是导入 fk_package 目录下的 arithmetic_chart.py
+import fk_package.arithmetic_chart
+
+fk_package.print_shape.print_blank_triangle(5)  #访问fk_package包下print_shape模块内的print_blank_triangle方法
+im = billing.Item(4.5)  #访问fk_package包下 billing 模块的 Item 类
+print(im)
+fk_package.arithmetic_chart.print_multiple_chart(5)  #访问  fk_package 包下arithmetic_chart模块的print_multiple_chart方法   
+
+'''
+
+#上面引用包类模块及包类模块的方法的弊端：
+'''
+1.需要很长的前缀才能调用包内模块中的程序单元
+2.包内的 __init__.py 文件的功能完全被忽略了
+'''
+#故：包内的 __init__.py 文件是用于导入该包内模块的成员，这样即可把模块中的成员导入变成包内成员，使用更方便
+
+#包内的 __init__.py 文件内容如下： 
+'''
+#从当前包中导入 print_shape 模块
+from . import print_shape
+#从 .print_shape 模块中导入所有程序单元到 fk_package包 中
+from .print_shape import *
+
+#从当前包中导入 billing 模块
+from . import billing
+#从 .billing模块中导入所有程序单元到 fk_package包 中
+from .billing import *
+
+#从当前包中导入 arithmetic_chart 模块
+from .import arithmetic_chart
+#从.arithmetic_chart 模块中导入所有程序单元到 fk_package包 中
+from .arithmetic_chart import *
+'''
+
+#通用代码
+'''
+#从当前包中导入 包内的 模块
+from .import 包内的模块名(不带.py后缀)
+#从 包内的 模块中导入该模块所有程序单元到 该包名 中
+from .要导入的包内模块名 import *
+'''
+
+#__init__.py 文件这样操作后，之后使用 fk_package. 前缀就可以使用三个模块内的程序单元
+
+'''
+#例如： fk_package_test.py
+
+#导入 fk_package 包,实际上就是导入该包下的 __init__.py 文件
+import fk_package
+#直接使用 fk_package. 前缀即可调用该包所包含的所有模块内的程序单元
+fk_package.print_blank_triangle(5)
+im = fk_package.Item(4.5)
+print(im)
+fk_package.print_multiple_chart(5)
+'''
+
+#查看模块内容
+'''
+1.使用 dir() 函数
+2.使用模块本身提供的 __all__ 变量
+'''
+#使用 dir()函数列出的模块中以下划线__开头的程序单元并不希望被外界使用
+#使用for循环的列表推导式或模块的__all__变量(如果定义了)来过滤不显示模块中以下划线开头的程序单元,在 python 交互式模式下使用
+'''例如:string模块举例
+>>[e for e in dir(string) if not e.startswith('__')]
+或 
+>>string.__all__
+'''
+
+#使用 help() 函数来查看程序单元的帮助信息，在python交互式命令行下
+#使用help()函数查看的其实就是程序单元的 __doc__ 属性值
+#例如：使用help()函数来查看string模块下capwords()函数的作用
+'''
+>>help(string)
+>> help(string.capwords)
+>>print(string.capwords.__doc__)
+>>import string
+>>print(string.capwords('adds:x', sep=':'))
+'''
+
+#对模块程序单元的文档信息不详细的，可查看此网址：https://docs.python.org/3/library/index.html
+
+#使用 __file__ 属性查看模块的源文件路径,通过查看源代码来了解模块使用方法
+'''在python交互式命令行下
+>>import string
+>>string.__file__
+'''
+
+#有些与底层交互的模块可能是用C语言编写的，而且是C程序编译后的效果，这种模块可能就没有 __file__ 属性
 
