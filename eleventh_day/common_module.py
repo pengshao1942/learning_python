@@ -127,11 +127,88 @@ os.system(command): 运行操作系统上的指定命令
 '''
 #示例：演示os模块中与进程管理相关的函数的功能
 import os
-os.system('cmd')
+#os.system('cmd')
 #使用nodepad打开excel文件
-os.startfile('D:\learning_python\eleventh_day\abc.xls')
-#os.spawnl(os.P_NOWAIT, 'D:\Typora\Typora.exe', ' ')
-os.system('cmd')
+#os.startfile('D:\learning_python\eleventh_day\1bc.xls')
+#打开Xshell工具
+os.spawnl(os.P_NOWAIT, 'D:\Xshell 6\Xshell.exe', ' ')
+#使用Typora程序打开bb.py文件
+os.execl('D:\Typora\Typora.exe', " ", 'README.md', 'i')
 '''
 
-#
+#使用os.system()函数来运行程序时，新程序所在的进程会替代原有的进程
+#在使用os.execl()函数运行新进程之后，也会取代原有的进程，故将os.execl()放在最后
+
+
+
+
+#random模块：主要包含生成伪随机数的各种功能变量和函数
+#交互式解释器中输入：
+'''
+>>import random
+>>random.__all__
+'''
+'''random模块下常用函数
+random.seed(a=None, version=2):指定种子来初始化伪随机数生成器
+random.randrange(start, stop[, step]):返回从start开始到stop结束、步长为step的随即数;
+     其实就相当于 choice(range(start, stop, step))的效果，只不过实际底层并不生成区间对象
+random.randint(a, b):生成一个范围为 a<<N<<b 的随即数。其等同于 randrange(a, b + 1)的效果
+random.choice(seq):从seq中随即抽取一个元素，如果seq为空，则引发 IndexError 异常
+random.choices(seq, weights=None, *, cum_weights=None, k=1): 从seq序列中抽出k个元素,还可通过weights
+    指定各元素被抽取的权重(代表被抽取的可能性高低)
+random.shuffle(x[, random]): 对x序列执行洗牌 “随即排列” 操作
+random.sample(population, N或k=N): 从population序列中随即抽取k个独立的元素
+random.random():生产一个从0.0(包含)到1.0(不包含)之间的伪随机浮点数
+random.uniform(a, b):生成一个范围为 a<<N<<b 的随即数
+random.expovariate(lambd): 生成呈指数分布的随即数。其中lambd参数(其实应该是lambda,只是lambda是Python关键字,
+      所以简写成lambd) 为 1 除以期望平均值。如果 lambd 是正值，则返回的随即数是从0到正无穷大；如果lambd为负值，
+      则返回的随机数是从负无穷大到0
+
+'''
+'''
+#案例：演示random模块中常见函数的功能和用法
+import random
+#生成范围为0.0<<x<1.0 的伪随机浮点数
+print(random.random())
+#生成范围为2.5<<x<<10.0 的伪随机浮点数
+print(random.uniform(2.5, 10.0))
+#生成呈指数分布的伪随机浮点数
+print(random.expovariate(1 / 5))
+#生成从0 到 9 的伪随机整数
+print(random.randrange(10))
+#生成从0 到 100 的随机偶数
+print(random.randrange(0, 101, 2))
+#随机抽取一个元素
+print(random.choice(['Python', 'Swift', 'Kotlin']))
+book_list = ['Python', 'Swift', 'Kotlin']
+#对列表元素进行随机排列
+random.shuffle(book_list)
+print(book_list)
+#随机抽取4个独立的元素,与下面的写法有些许差异
+print(random.sample([10, 20, 30, 40, 50], 4))
+#随机抽取3个独立的元素
+print(random.sample([10, 20, 30, 40, 50], k=3))
+'''
+
+'''
+#案例：扑克牌抽牌
+import random
+import collections  #集合模块
+
+#指定随机抽取6个元素，各元素被抽取的权重(概率)不同
+print(random.choices(['Python', 'Swift', 'Kotlin'], [5, 3, 2], k=6))  
+#[5, 3, 2]中对应['Python', 'Swift', 'Kotlin']中三个元素的抽取权重比例，比例越小被抽中的几率越小
+#下面模拟从52张扑克牌中抽取20张
+#在被抽到的20张牌中，牌面为10(包括J、Q、K)的牌占多个比例
+#生成一个16个tens(代表10)和36个low_cards(代表其他牌)的集合
+deck = collections.Counter(tens=16, low_cards=36)
+#从52张牌中随即抽取20张
+#seen = random.sample(list(deck.elements()), 20)
+seen = random.sample(list(deck.elements()), k=20)
+#统计tens元素有多少个，再除以20
+print(seen.count('tens') / 20)
+'''
+
+
+
+
