@@ -210,5 +210,25 @@ print(seen.count('tens') / 20)
 '''
 
 
+#time模块：主要包含各种提供日期、时间功能的类和函数；提供了把日期、时间格式化为字符串的功能，也提供了从字符串恢复日期、时间的功能
+'''
+import time
+print([e for e in dir(time) if not e.startswith('_')])  #查看time模块包含的全部属性和函数
+'''
 
+#在time模块内提供了一个time.struct_time类，该类代表一个时间对象，主要包含9个属性，每个属性的信息如下：
+'''
+字段名      字段含义    值
+tm_year     年         如 2017、2018等
+tm_mon      月         如2、3等,范围为 1~12
+tm_mday     日         如2、3等，范围为 1~31
+tm_hour     时         如2、3等，范围为 0~23
+tm_min      分         如2、3等，范围为 0~59
+tm_sec      秒         如2、3等，范围为 0~59
+tm_wday     周         周一为0，范围为 0~6
+tm_yday  一年内第几天   如65，范围为1~366
+tm_isdst    夏令时     0、1或 -1
+'''
+#例如：清楚地代表时间
+# time.struct_time(tm_year=2018, tm_mon=5, tm_mday=2, tm_hour=8, tm_min=0, tm_sec=30, tm_wday=3, tm_yday=1, tm_isdst=0)
 
