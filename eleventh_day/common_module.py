@@ -232,3 +232,57 @@ tm_isdst    夏令时     0、1或 -1
 #例如：清楚地代表时间
 # time.struct_time(tm_year=2018, tm_mon=5, tm_mday=2, tm_hour=8, tm_min=0, tm_sec=30, tm_wday=3, tm_yday=1, tm_isdst=0)
 
+#python还可以用一个包含9个元素的元组来代表时间，该元组的9个元素和 struct_time 对象中9个属性的含义是意义对应的
+#如： (2018, 5, 2, 8, 0, 30, 3, 1, 0)
+
+#在日期、时间模块内常用的功能函数如下：
+'''
+time.asctime([t]): 将时间元组或 struct_time 转换为时间字符串。如果不指定参数t,则默认转换当前时间
+time.ctime([secs]):将以秒数代表的时间转换为时间字符串
+time.gmtime([secs]):将以秒数代表的时间转换为 struct_time 对象。如果不传入参数，则使用当前时间
+time.localtime([secs]): 将以秒数代表的时间转换为代表当前时间的 struct_time 对象，如果不传入参数，则使用当前时间
+time.mktime(t): 它是localtime的反转函数，用于将 struct_time 对象或元组代表的时间转换为从 1970年1月 1日 0 点整到现在过了多少秒
+time.perf_counter(): 返回性能计数器的值。以秒为单位
+time.process_time(): 返回当前进程使用 CPU 的时间。以秒为单位
+time.sleep(secs): 暂停 secs 秒，什么都不干
+time.strftime(format[, t]):将时间元组或struct_time对象格式化为指定格式的时间字符串，如果不指定参数t,则默认转换当前时间
+time.strptime(string[, format]):将字符串格式的时间解析成struct_time 对象,与上一个函数互为逆函数
+time.time(): 返回从1970年1月1日0点整到现在过了多少秒
+time.timezone: 返回本地时区的时间偏移，以秒为单位
+time.tzname: 返回本地时区的名字
+'''
+
+'''
+#示范time模块的功能函数：
+import time
+#将当前时间转换为时间字符串
+print(time.asctime())
+#将指定时间转换为时间字符串，时间元组的后面3个元素没有设置
+print(time.asctime((2018, 2, 4, 11, 8, 23, 0, 0, 0)))  #2018年2月4日11点8分23秒
+#将以秒数代表的时间转换为时间字符串
+print(time.ctime(30))
+#将以秒数代表的时间转换为struct_time对象
+print(time.gmtime(30))
+#将当前时间转换为struct_time对象
+print(time.gmtime())
+#将以秒数代表的时间转换为代表当前时间的 struct_time 对象
+print(time.localtime(30))
+#将元组格式的时间转换为以秒数代表的时间
+print(time.mktime((2018, 2, 4, 11, 8, 23, 0, 0, 0)))  #1517713703.0
+#返回性能计数器的值
+print(time.perf_counter())
+#返回当前进程使用CPU的时间
+print(time.process_time())
+#time.sleep(10)
+#将当前时间转换为指定格式的字符串
+print(time.strftime('%Y-%m-%d %H:%M:S'))  #Python支持的时间格式指令和Linux系统一样
+st = '2018年3月20日'
+#将指定时间字符串恢复成struct_time对象
+print(time.time())
+#返回本地时区的时间偏移，以秒为单位
+print(time.timezone)  #在中国东八区输出-28800
+'''
+
+
+#JSON支持
+
