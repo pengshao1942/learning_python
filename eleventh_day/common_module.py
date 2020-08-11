@@ -360,6 +360,11 @@ json.dumps(obj, *, ...): 将obj对象转换为JSON字符串，并返回该JSON�
 json.load(fp, *, ...): 从fp流读取JSON字符串，将其恢复成JSON对象，其中fp是一个支持write()方法的类文件对象
 json.loads(s, *, ...)：将JSON字符串s恢复成JSON对象
 '''
+#json模块的dumps()函数和dump()函数的功能、所支持的选项基本相同
+'''
+dumps()函数直接返回转换得到的JSON字符串
+dump()函数转换得到的JSON字符串输出到文件中
+'''
 
 '''
 #示范 dumps() 和 dump() 函数的 encode 操作(将Python对象转换成JSON字符串)
@@ -391,14 +396,58 @@ print(s5)
 s6 = json.dumps({'Python': 5, 'Kotlin': 7}, sort_keys=True, indent=4)
 print(s6)
 
-#使用JSONEncoder 的encode方法将 Python 对象转换为 JSON 字符串
+#1.使用 json.JSONEncoder对象 的encode方法将 Python 对象转换为 JSON 字符串
 s7 = json.JSONEncoder().encode({"names": ("孙悟空", "齐天大圣")})
 print(s7)
 f = open('a.json', 'w')
 
-#使用dump()函数将转换得到的JSON字符串输出到文件中
-json.dump(['Kotlin', {'Python': 'excellent'}], f)
+#2.直接使用dump()函数将转换得到的JSON字符串输出到文件中，比 json.JSONEncoder对象 的encode方法 更高级
+json.dump(['Kotlin', {'Python': 'excellent'}], f)  #输出到D:\learning_python目录下的a.json文件中
 '''
 
+'''
+#示范json模块的 loads() 和 load() 函数的 decode 操作(将JSON字符串转换成Python对象)
+import json
+# 将 JSON 字符串恢复成 Python 列表
+result1 = json.loads('["yeeku", {"favorite": ["coding", null, "game", 25]}]')
+print(result1)
 
+#将JSON字符串恢复成Python字符串
+result2 = json.loads('"\\"foo\\"bar"')
+print(result2)
 
+#定义一个自定义的转换(恢复)函数
+def as_complex(dct):
+    if '__complex__' in dct:
+        return complex(dct['real'], dct['image'])
+    return dct
+#使用自定义的恢复函数
+#自定义的恢复函数将real数据转换成复数的实部，将 imag 转换成复数的虚部
+result3 = json.loads('{"__complex__": true, "real": 1, "image": 2}', \
+    object_hook=as_complex)
+print(result3)
+
+f = open('a.json')  #打开文件
+#从文件流恢复JSON列表
+result4 = json.load(f)
+print(result4)
+'''
+
+#python支持更多的JSON所不支持的类型，当转换JSON不支持的类型时，直接使用dumps()或dump()函数进行转换，程序会出问题
+#此时就需要对JSONEncoder类进行扩展，通过扩展来完成从Python特殊类型到JSON类型的转换
+
+#示例：通过扩展JSONEncoder来实现从Python复数到JSON字符串的转换
+import json
+#定义 JSONEncoder 的子类
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, obj):
+        #如果要转换的对象是复数类型，程序负责处理,将复数转换成python对象
+        if isinstance(obj, complex):
+            return {"__complex__": 'true', 'real': obj.real, 'img': obj.imag}  #自定义转换
+        #对于其他类型，还使用 JSONEncoder默认处理
+        else:  
+            return json.JSONEncoder.default(self, obj)
+       #return json.JSONEncoder.default(self, obj)  #省略else的写法
+
+s1 = json.dumps(2 + 1j, cls = ComplexEncoder)
+print(s1)
