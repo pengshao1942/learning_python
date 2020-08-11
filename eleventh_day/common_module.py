@@ -284,5 +284,82 @@ print(time.timezone)  #在中国东八区输出-28800
 '''
 
 
+#json模块
 #JSON支持
+'''
+JSON数据结构：
+1. 由 key-value 对组成的数据结构。在python中是一种dict对象
+2. 有序集合。在python中对应于列表
+'''
+#JSON语法格式:
+'''
+object = 
+{
+    propertyName1 : propertyValue1,
+    propertyName2 : propertyValue2,  #必须当后面还有属性定义时才需要逗号
+    ...
+}
+'''
+#在使用JSON语法创建JavaScript对象时，属性值可以时普通字符串、基本数据类型、函数、数组甚至另一个使用JSON语法创建的对象
+#例如：
+'''
+person = 
+{
+    name : 'yeeku',
+    gender : 'male',
+    // 使用JSON语法为其指定一个属性
+    son : {
+        name:'tiger',
+        grade:1
+    },
+    // 使用JSON语法为person直接分配一个方法
+    info : function()
+    {
+        console.log("姓名: " + "this.name" + "性别: " + this.sex);
+    }
+}
+'''
 
+#使用 JSON 语法创建数组
+#var a = ['yeeku', 'nono']  #以英文方括号 [] 开始，依次放入数组元素，元素之间以英文逗号隔开
+'''arr = [value1, value2, ...]'''
+
+
+#json模块提供对JSON的支持: json模块
+'''
+        JSON 类型转换 Python 类型的对应关系
+JSON类型                       Python类型
+
+对象(object)                   字典(dict)
+数组(array)                    列表(list)
+字符串(string)                 字符串(str)
+整数(number(int))              整数(int)
+实数(number(real))             浮点数(float)
+true                           True
+false                          False
+null                           None 
+'''
+
+'''
+        Python类型转换JSON类型的对应关系
+Python类型                      JSON类型
+
+字典(dict)                      对象(object)
+列表(list)和元组(tuple)          数组(array)
+字符串(str)                     字符串(string)
+整型、浮点型，以及整型、浮点型派生的枚举(float, int-& float-derived Enums)   数值型(number)
+True                            true
+False                           false
+None                            null
+'''
+
+#json模块中常用的函数和类的功能：
+'''
+json.dump(obj, fp, ...): 将obj对象转换成JSON字符串输出到fp流中，fp是一个支持 write() 方法的类文件对象
+json.dumps(obj, *, ...): 将obj对象转换为JSON字符串，并返回该JSON字符串
+json.load(fp, *, ...): 从fp流读取JSON字符串，将其恢复成JSON对象，其中fp是一个支持write()方法的类文件对象
+json.loads(s, *, ...)：将JSON字符串s恢复成JSON对象
+'''
+
+#示例：
+#示范 dumps() 和 dump() 函数的 encode 操作(将Python对象转换成JSON字符串)
