@@ -436,6 +436,7 @@ print(result4)
 #python支持更多的JSON所不支持的类型，当转换JSON不支持的类型时，直接使用dumps()或dump()函数进行转换，程序会出问题
 #此时就需要对JSONEncoder类进行扩展，通过扩展来完成从Python特殊类型到JSON类型的转换
 
+'''
 #示例：通过扩展JSONEncoder来实现从Python复数到JSON字符串的转换
 import json
 #定义 JSONEncoder 的子类
@@ -449,5 +450,243 @@ class ComplexEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, obj)
        #return json.JSONEncoder.default(self, obj)  #省略else的写法
 
-s1 = json.dumps(2 + 1j, cls = ComplexEncoder)
+s1 = json.dumps(2 + 1j, cls = ComplexEncoder)  # 方法1
 print(s1)
+s2 = ComplexEncoder().encode(2 + 1j)  #方法2
+print(s2)
+'''
+
+#扩展了JSONEncoder的子类之后，程序有两种方式使用自定义的子类
+'''
+1.在dumps()或dump()函数中通过cls属性指定使用JSONEncoder的自定义子类
+2.直接使用JSONEncoder的自定义子类的encode()方法来执行转换
+'''
+
+
+
+#正则表达式模块re
+'''
+import re
+print(re.__all__)
+print(dir(re))
+'''
+
+#re模块中常用的正则表达式函数
+'''
+re.compile(pattern, flags=0):该函数用于将正则表达式字符串编译成 _sre.SRE_Pattern 对象,该对象代表了正则表达式编译之后在内存中的对象，它可以缓存
+        并复用正则表达式字符串。如果程序需要多次使用同一个正则表达式字符串，则可考虑先编译它。该函数的pattern参数就是它所编译的正则表达式字符串，flags
+        则代表了正则表达式的匹配旗标
+'''
+
+#编译得到的 _sre.SRE_Pattern 对象包含了 re 模块中绝大部分函数对应的方法
+
+'''
+#示例：先编译正则表达式，然后调用正则表达式的 search() 方法执行匹配
+import re
+#先编译正则表达式
+p = re.compile('abc')
+#调用_sre.SRE_Pattern对象的 search() 方法
+p.search("www.abc.com")
+#直接用正则表达式匹配目标字符串,此一行效果与上面两行代码结果一样
+re.search('abc', 'www.abc.com')
+'''
+
+"""
+re.match(pattern, string, flags=0): 尝试从字符串的开始位置来匹配正则表达式，如果从开始位置匹配不成功，match()
+        函数就返回None。其中pattern参数代表正则表达式；string代表被匹配的字符串；flags则代表正则表达式的匹配旗标。
+        该函数返回_sre.SRE_Match对象,该对象包含的span(n)方法用于获取第n+1个组的匹配位置，group(n)方法用于获取第n+1
+        个组所匹配的子串，n默认是0，可省略
+re.search(pattern, string, flags=0):扫描整个字符串，并返回字符串中第一处匹配pattern的匹配子串。其中pattern参数代表
+        正则表达式;string代表被匹配的字符串；flags则代表正则表达式的匹配旗标。该函数也返回 _sre.SRE_Match 对象
+"""
+
+#示例：
+'''
+import re
+m1 = re.match('www', 'www.fkit.org')
+print(m1.span())
+print(m1.group())
+print(re.match('fkit', 'www.fkit.com'))
+
+m2 = re.search('www', 'www.fkit.org')
+print(m2.span())
+print(m2.group())
+m3 = re.search('fkit', 'www.fkit.com')
+print(m3.span())
+print(m3.group())
+'''
+
+"""
+re.findall(pattern, string, flags=0): 扫描整个字符串，并返回字符串中所有匹配pattern的子串组成的列表。
+        其中pattern参数代表正则表达式；string代表被匹配的字符串；flags则代表正则表达式的匹配旗标
+re.finditer(pattern, string, flags=0):扫描整个字符串，并返回字符串中所有匹配pattern的子串组成的迭代器，
+        迭代器的元素是 _sre.SRE_Match 对象。其中 pattern 参数代表正则表达式;string代表被匹配的字符串;
+        flags则代表正则表达式的匹配旗标
+区别在于：findall()返回列表；finditer()函数返回迭代器
+"""
+
+#案例：
+'''
+import re
+#返回所有匹配pattern的子串组成的列表，忽略大小写
+print(re.findall('fkit', 'FkIt is very good, Fkit.org is my favorite', re.I))  #re.I表示忽略大小写
+
+#返回所有匹配pattern的子串组成的迭代器，忽略大小写
+it = re.finditer('fkit', 'FkIt is very good, Fkit.org is my favorite', re.I)
+for e in it:
+    print(str(e.span()) + "-->" + e.group())
+'''
+
+"""
+re.fullmatch(pattern, string, flags=0): 该函数要求整个字符串能匹配pattern，如果匹配则返回包含匹配信息的 _sre.SRE_Match
+        对象；否则返回 None
+re.sub(pattern, repl, string, count=0, flags=0): 该函数用于将string字符串中所有匹配pattern的内容替换成repl;
+        repl既可是被替换的字符串，也可是一个函数。count 参数控制最多替换多少次，如果指定 count 为0，则表示全部替换
+"""
+
+#案例：演示re.sub()函数的简单用法
+'''
+import re
+my_date = '2008-08-18'
+#将my_date字符串里的中画线替换成斜线
+print(re.sub(r'-', '/', my_date))  # r是原始字符串，可避免对字符串中的特殊字符进行转义
+print(re.sub(r'-', '/', my_date, count=1))  #count放在后面
+print(re.sub(r'-', '/', my_date, 1))  #可省略count，直接输入count的值,效果同上
+'''
+
+#所执行的替换要基于被替换内容进行改变
+'''
+#案例：将字符串中的每个英文单词都变成一本图书的名字
+import re
+#在匹配的字符串前后添加内容
+def fun(matched):
+    # matched就是匹配对象，通过该对象的group()方法可获取被匹配的字符串
+    value = " 《疯狂" + (matched.group('lang')) + "讲义》 "  #用到了re.match的group(),组名是lang
+    return value
+s = 'python很好， kotlin很好'
+#对s里面的英文单词(用re.A旗标控制)进行替换
+#使用fun函数指定替换的内容
+print(re.sub(r'(?P<lang>\w+)', fun, s, flags = re.A))  #r'(?P<lang>\w+)'  是一个正则表达式,前面的组名lang要放在<>内，re.A表示只能匹配ASCII字符，不能匹配汉字
+'''
+
+
+"""
+re.split(pattern, string, maxsplit=0, flags=0): 使用pattern对string进行分割，该函数返回分割得到的多个子串组成的列表。其中maxsplit参数控制最多分割几次
+"""
+
+'''
+#案例：示范split()函数的用法
+import re
+#使用逗号对字符串进行分割
+print(re.split(', ', 'fkit, fkjava, crazyit'))
+
+#指定只分割一次，被切分成两个子串
+print(re.split(', ', 'fkit, fkjava, crazyit', 1))  #同样，maxsplit可以省略只输入数字，0表示全部分割
+
+#使用a进行分割
+print(re.split('a', 'fkit, fkjava, crazyit'))
+
+#使用x进行分割，没有匹配内容，则不会执行分割
+print(re.split('x', 'fkit, fkjava, crazyit'))
+'''
+
+"""
+re.purge(): 清除正则表达式缓存
+re.escape(pattern): 对模式中 '除ASCII字符、数值、下划线_ 之外' 的其他字符进行转义,空格也转义;转义是在前面加一个\
+"""
+
+'''
+#案例：演示escape()函数的用法
+import re
+#对模式中的特殊字符进行转义
+print(re.escape(r'www.crazyit.or1g is good, i love it!'))
+print(re.escape(r'A-Zand0-9?'))
+'''
+
+#re模块中还包含两个类，分别是正则表达式对象(具体类型为 _sre.SRE_Pattern)和匹配(Match)对象，其中正则表达式对象就是调用re.compile()函数的返回值。
+#该对象的方法与前面re模块中的函数大致对应
+
+'''
+#案例：使用正则表达式的方法来执行匹配
+import re
+#编译得到正则表达式对象
+pa = re.compile('fkit')  #后面可多次使用pa对象(它缓存了正则表达式)来执行匹配，而不用 re.
+#调用match方法，原本应该从开始位置匹配
+#此处指定从索引4的地方开始匹配，可以匹配成功,正好从f开始匹配
+print(pa.match('www.fkit.org', 4).span())  #re.match() 的 span()方法
+
+#此处指定从索引4到索引6之间执行匹配，匹配失败，只有fk(不算索引6的字母i)，匹配失败
+print(pa.match('www.fkit.org', 4, 6))
+
+#此处指定从索引4到索引8之间执行全匹配，匹配成功，正好匹配到fkit
+print(pa.fullmatch('www.fkit.org', 4, 8).span())
+'''
+
+'''使用编译正则表达式的好处：使用 complile() 函数编译正则表达式之后，该函数所返回的对象就会缓存该正则表达式，从而可以多次利用
+该正则表达式执行匹配。'''
+
+'''re模块中的Match对象(其具体类型为 _sre.SRE_Match)则是match()、search()方法的返回值,该对象中包含了详细的正则表达式匹配信息
+,包括正则表达式匹配的位置、正则表达式所匹配的子串'''
+
+"""
+_sre.SRE_Match 对象包含了如下方法或属性：
+    match.group([group1, ...]):获取该匹配对象中指定组所匹配的字符串
+    match.__getitem__(g):这是match.group(g)的简化写法。由于match对象提供了__getitem__()方法，因此程序可使用match[g]来代替match.group(g)
+    match.groups(default=None):返回match对象中所有组所匹配的字符串组成的元组
+    match.groupdict(default=None):返回match对象中所有组所匹配的字符串组成的字典
+    match.start([group]):获取该匹配对象中指定组所匹配的字符串的开始位置
+    match.end([group]):获取该匹配对象中指定组所匹配的字符串的结束位置
+    match.span([group]):获取该匹配对象中指定组所匹配的字符串的开始位置和结束位置。该方法相当于同时返回start()和end()方法的返回值
+"""
+
+#组 是正则表达式中常见的：用圆括号将多个表达式括起来形成组。如果正则表达式中没有圆括号，那么整个表达式就属于一个默认组
+
+'''
+#示例：演示正则表达式中组的使用
+import re
+#在正则表达式中使用组
+m = re.search(r'(fkit).(org)', r'www.fkit.org is a good domain')  #r'(fkit).(org)'  是一个正则表达式，包含两个组(fkit)和(org)
+print(m.group(0))
+
+#调用的简化方法，底层是调用m.__getitem__(0)
+print(m[0])
+print(m.span(0))
+print(m.group(1))
+
+#调用的简化写法，底层是调用 m.__getitem__(1)
+print(m[1])
+print(m.span(1))
+print(m.group(2))
+
+#调用的简化写法，底层是调用m.__getitem__(2)
+print(m[2])
+print(m.span(2))
+#返回所有组所匹配的字符串组成的元组
+print(m.groups())
+
+
+"""如果在正则表达式中为组指定了名字(用?P<名字>为正则表达式的组指定名字)，就可以调用groupdict()方法来获取所有组所匹配的字符串组成的字典---其中组名作为字典的key
+为正则表达式定义了两个组，并为组指定了名字"""
+
+m2 = re.search(r'(?P<prefix>fkit).(?P<suffix>org)',\
+    r"www.fkit.org is a good domain")
+print(m2.groupdict())  #返回一个字典，组名为key,组所匹配的子串为value
+'''
+
+'''
+match.pos: 该属性返回传给正则表达式对象的search()、match()等方法的pos参数
+match.endpos: 该属性返回传给正则表达式对象的search()、match()等方法的endpos参数
+match.lastindex: 该属性返回最后一个匹配的捕获组的整数索引。如果没有组匹配，该属性返回None。例如用(a)b、((a)(b))或((ab))对字符串'ab'执行匹配，
+        该属性都会返回1;但如果使用(a)(b)正则表达式对'ab'执行匹配，则 lastindex 等于2。
+match.lastgroup: 该属性返回最后一个匹配的捕获组的名字；如果该组没有名字或根本没有组匹配，该属性返回None
+match.re: 该属性返回执行正则表达式匹配时所用的正则表达式
+match.string:该属性返回执行正则表达式匹配时所用的字符串
+'''
+
+
+
+
+
+
+
+
