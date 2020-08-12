@@ -673,7 +673,7 @@ m2 = re.search(r'(?P<prefix>fkit).(?P<suffix>org)',\
 print(m2.groupdict())  #返回一个字典，组名为key,组所匹配的子串为value
 '''
 
-'''
+"""
 match.pos: 该属性返回传给正则表达式对象的search()、match()等方法的pos参数
 match.endpos: 该属性返回传给正则表达式对象的search()、match()等方法的endpos参数
 match.lastindex: 该属性返回最后一个匹配的捕获组的整数索引。如果没有组匹配，该属性返回None。例如用(a)b、((a)(b))或((ab))对字符串'ab'执行匹配，
@@ -681,7 +681,49 @@ match.lastindex: 该属性返回最后一个匹配的捕获组的整数索引。
 match.lastgroup: 该属性返回最后一个匹配的捕获组的名字；如果该组没有名字或根本没有组匹配，该属性返回None
 match.re: 该属性返回执行正则表达式匹配时所用的正则表达式
 match.string:该属性返回执行正则表达式匹配时所用的字符串
+"""
+
+#正则表达式旗标
+#正则表达式旗标都使用该模块中的属性来代表：
+
+"""
+re.A 或 re.ASCII: 该旗标控制\w, \W, \b, \B, \d, \D, \s 和 \S 只匹配 ASCII 字符，而不匹配所有的Unicode字符。也可以在正则表达式中使用(?a)行内旗标来代表
+re.DEBUG: 显示编译正则表达式的 Debug 信息。没有行内旗标
+re.I 或 re.IGNORECASE: 使用正则表达式匹配时不区分大小写。对应于正则表达式中的(?i)行内旗标
+"""
+
 '''
+#案例：
+import re
+#默认区分大小写，所以无匹配
+print(re.findall(r'fkit', 'Fkit is a good domain, FKIT is good'))
+#使用re.I指定区分大小写
+print(re.findall(r'fkit', 'Fkit is a good domain, FKIT is good', re.I))
+'''
+
+"""
+re.L 或 re.LOCALE: 根据当前区域设置使用正则表达式匹配时不区分大小写。该旗标只能对 bytes 模式起作用，对应于正则表达式中的(?L)行内旗标
+re.M 或 re.MULTILINE: 多行模式的旗标。当指定该旗标后, "^" 能匹配字符串的开头和每行的开头(紧跟在每一个换行符的后面); "$" 能匹配字符串的末尾和每行的末尾(在每一个换行符之前)
+        默认情况下，"^" 只匹配字符串的开头， "$" 只匹配字符串的结尾，或者匹配到字符串默认的换行符(如果有)之前。对应于正则表达式中的(?m)行内旗标
+re.S 或 s.DOTALL: 让点(.)能匹配包括换行符在内的所有字符，如果不指定该旗标，则点(.)能匹配不包括换行符的所有字符。对应于正则表达式中的(?s)行内旗标
+re.U 或 re.Unicode: 该旗标控制\w, \W, \b, \B, \d, \D, \s 和 \S 能匹配所有的Unicode字符。这个旗标在 Python3.x中是多余的，因为Pyhon3.x默认就是
+        匹配所有的Unicode字符
+re.X 或 re.VERBOSE: 通过该旗标允许 '分行' 书写正则表达式，也允许为正则表达式 '添加注释',从而提高正则表达式的可读性。对应于正则表达式中的(?x)行内旗标
+"""
+
+'''
+#案例：下面2个正则表达式匹配的结果是一样的
+import re
+a = re.compile(r"""020  #广州的区号
+            \-   #中间的短横线
+            \d{8}  #8个数值""", re.X)   #re.X旗标
+b = re.compile(r'020\-\d{8}')
+print(a.match('020-25456456g'))
+print(b.match('020-25456456g'))
+'''
+
+
+#创建正则表达式
 
 
 
