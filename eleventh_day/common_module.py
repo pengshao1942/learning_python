@@ -872,10 +872,13 @@ print(re.search(r'(?i)[a-z0-9_]{3,}(?#username)@fkit\.org', 'Sun@FKIT.ORG'))  #(
 '''
 #例如：
 import re
-print(re.search(r'(?i:[a-z0-9_]){3,}@fkit\.org', 'Sun@fkit.org'))  #(?i:[a-z0-9_])是一个组，该组内的表达式不区分大小写,即sun不区分大小写,但组外的fkit还是区分大小写
+#print(re.search(r'(?i:[a-z0-9_]){3,}@fkit\.org', 'Sun@fkit.org'))  #(?i:[a-z0-9_])是一个组，该组内的表达式不区分大小写,即sun不区分大小写,但组外的fkit还是区分大小写
 #print(re.search(r'([a-z0-9_]){3,}@fkit\.org', 'Sun@fkit.org', re.I))   #效果同上，re.I 对应于 旗标：组内(?i)
+#如果在旗标前应用 - ，则表示去掉旗标
+print(re.search(r'(?-i:[a-z0-9_]){3,}@fkit\.org', 'sun@Fkit.org', re.I))  #re.I表示整个表达式不区分大小写，而 (?-i:exp)由表示去掉re.I,因此组内的表达式还是区分大小写
 '''
 
+#正则表达式的 贪婪模式 和 勉强模式
 """
 
 """
