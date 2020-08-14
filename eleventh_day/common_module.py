@@ -878,10 +878,183 @@ import re
 print(re.search(r'(?-i:[a-z0-9_]){3,}@fkit\.org', 'sun@Fkit.org', re.I))  #re.I表示整个表达式不区分大小写，而 (?-i:exp)由表示去掉re.I,因此组内的表达式还是区分大小写
 '''
 
+
 #正则表达式的 贪婪模式 和 勉强模式
+#Python正则表达式支持如下几种频度限定：
 """
+*：限定前面的子表达式可出现 0~N 次。例如正则表达式 r'zo*' 能匹配 'z',也能匹配 'zoo'、'zooo'等。* 等价于{0,}
++: 限定前面的子表达式出现 1~N 次。例如正则表达式 r'zo+' 不能匹配 'z' ,可匹配 'zo'、'zoo'、'zooo'等 。+ 等价于 {1,}
+?: 限定前面的子表达式出现 0~1 次。例如正则表达式 r'zo?' 能匹配 'z' 和 'zo' 两个字符串。 ? 等价于{0,1}
+{n,m}: n和m均为非负整数,其中 n<=m,限定前面的子表达式出现 n~m 次。例如正则表达式 r'fo{1,3}d' 可匹配 'fod'、'food'、'foood'这三个字符串
+{n,}: n是一个非负整数,限定前面的子表达式 至少 出现n次。例如正则表达式 r'fo{2,}d' 可匹配 'food'、'foood'、'fooood'等字符串
+{,m}: m是一个非负整数，限定前面对的子表达式 至多 出现m次。例如正则表达式 r'fo{,3}d' 可匹配 'fd'、'fod'、'food'、'foood'这四个字符串
+{n}: n是一个非负整数,限定前面的子表达式 必须 出现n次。例如正则表达式 r'fo{2}d' 只能匹配 'food' 字符串
 
 """
+#例如：匹配电话号码xxx-xxx-xxxx格式
+#r'\d{3}-\d{3}-\d{4}'
+
+#正则表达式的频度限定默认是贪婪模式的：即表达式中的模式会尽可能多地匹配字符
+
+'''
+#例如：
+import re
+print(re.search(r'@.+\.', 'sun@fkit.com.cn'))  #贪婪模式，尽可能多地匹配,只要最后有一个.即可，匹配结果是：@fkit.com.
+print(re.search(r'@.+?\.', 'sun@fkit.com.cn')) #勉强模式，尽可能少地匹配。最少是1，故结果为：@fkit.
+'''
+
+
+
+#容器相关类
+#集合和双端队列
+#双端队列(deque)的特征是它的两端都可以添加、删除元素，它既可作为栈(stack)使用，也可作为队列(queue)使用
+#集合(set)：不记录元素的添加顺序、元素不允许重复、是可变容器，程序可以改变容器中的元素
+#frozenset集合：是set的不可变版本，它的元素是不可变的
+
+#print([e for e in dir(set) if not e.startswith('_')])
+
+'''
+#案例：演示集合set的用法
+
+#使用花括号构建set集合
+c = {'白骨精'}
+#添加元素
+c.add("孙悟空")
+c.add(6)
+print("c集合的元素的个数为：" , len(c))
+
+c.remove(6)
+#c.remove('nihao')  #移除集合中不存在的元素时，使用集合的remove()方法报KeyErro异常，且程序中止
+c.discard('ene')  #移除集合中不存在的元素时，使用集合的discard()方法无异常提示，什么也不做
+c.discard('白骨精')
+print("c集合现在的元素的个数为：" , len(c))
+#判断是否包含指定字符串
+print("c集合是否包含'孙悟空'字符串:", ("孙悟空" in c))   #输出True
+print("c集合的元素：", c)
+
+#使用 set()函数 (构造器) 来创建 set 集合
+books = set()  #set() 表示空集合
+books.add("轻量级Java EE企业应用实战")
+print("books集合的元素: ", books)
+
+#使用issubset()方法判断是否为子集合
+print("books集合是否为c的子集合?", books.issubset(c))
+#issubset()方法与<=运算符的效果相同
+print("books集合是否为c的子集合?", (books <= c))
+
+#使用issuperset()方法判断是否为父集合
+#issubset 和 issuperset 其实就是相互倒过来判断
+print("c集合是否完全包含books集合?", (c >= books))
+#用c集合减去books集合里的元素，不改变c集合本身
+result1 = c - books
+print(result1)
+
+#difference()方法也是对集合做减法，与用"="执行运算的效果完全一样
+result2 = c.difference(books)
+print(result2)
+#用c集合减去books集合里的元素，改变c集合本身
+c.difference_update(books)
+print("c集合的元素: ", c)
+
+#删除c集合里的所有元素
+c.clear()
+print("c集合的元素: ", c)
+
+#直接创建包含元素的集合
+d = {"疯狂Java讲义", '疯狂Python讲义', '疯狂Kotlin讲义'}
+print("d集合的元素: ", d)
+
+#计算两个集合的交集,不改变d集合本身
+inter1 = d & books
+print(inter1)
+#intersection()方法也是获取两个集合的交集，与用"&"执行运算的效果完全一样
+inter2 = d.intersection(books)
+print(inter2)
+
+#计算两个集合的交集，改变d集合本身
+d.intersection_update(books)
+print("d集合的元素：", d)
+
+#将range对象包装成set集合
+e = set(range(5))
+f = set(range(3, 7))
+print("e集合的元素：", e)
+print("f集合的元素：", f)
+
+#对两个集合执行异或运算
+xor = e ^ f
+print('e和f执行xor的结果：', xor)
+
+#计算两个集合的并集，不改变e集合本身
+un = e.union(f)
+print('e和f执行并集的结果：', un)
+
+#计算两个集合的并集，改变e集合本身
+e.update(f)
+print('e集合的元素：', e)
+'''
+
+#上面示范了集合支持的几个运算符
+"""
+<= : 相当于调用 issubset() 方法，判断前面的set集合是否为后面的set集合的子集合
+>= : 相当于调用 issuperset() 方法,判断前面的set集合是否为后面的set集合的父集合
+- ：相当于调用 difference() 方法，用前面的set集合减去后面的set集合的元素
+& ：相当于调用 intersection() 方法,用于获取两个set集合的交集
+^ : 计算两个集合异或的结果，就是用两个集合的并集减去交集的元素
+"""
+
+#set集合支持进行集合运算来改变集合内的元素
+"""
+交集运算：intersection() 和 intersection_update(), 前者不改变集合本身，而是返回两个集合的交集；后者会通过
+            交集运算改变第一个集合
+并集运算：union() 和 update(), 前者不改变集合本身，而是返回两个集合的并集;后者会通过并集运算改变第一个集合
+减法运算：difference() 和 difference_update(),前者不改变集合本身,而是返回两个集合做减法的结果；后者改变第一个集合
+"""
+
+#frozenset是set的不可变版本，因此set集合中所有能改变集合本身的方法，frozenset都不支持;set集合中不改变集合本身的方法，frozenset都支持
+#print([e for e in dir(frozenset) if not e.startswith('_')])   #查看frozenset支持的方法
+
+#frozenset作用主要有两点：
+"""
+当集合元素不需要改变时，使用 frozenset 代替 set 更安全
+当某些 API 需要不可变对象时,必须用frozenset 代替 set。比如 dict 的key必须是不可变对象，因此只能用 frozenset;
+再比如set本身的集合元素必须是不可变的，因此 "set不能包含set,set只能包含frozenset"
+"""
+
+'''
+#案例：set不能包含set,set只能包含frozenset
+s = set()
+frozen_s = frozenset('Kotlin')  #定义frozenset不可变集合
+#为set集合添加frozenset
+s.add(frozen_s)
+print('s集合的元素: ', s)
+sub_s = {'python'}
+#为set集合添加普通set集合，程序报错
+s.add(sub_s)   #报错：TypeError: unhashable type: 'set'
+'''
+
+
+#栈：是一种特殊的线性表，只允许在一端进行插入、删除操作，这一段被称为栈顶(top)，另一端则被称为栈底(bottom)
+#队列：也是一种特殊的线性表,只允许在表的前端(front)进行删除操作，在表的后端(rear)进行插入操作
+#进行插入操作的端被称为队尾，进行删除操作的端被称为队头；其内的元素遵循先进先出(FIFO)的规则
+
+#双端队列(deque)： 代表一种特殊的队列，可以在两端同时进行插入、删除操作
+
+#对一个双端队列：如果程序将所有的插入、删除操作都固定在一端进行，那么这个双端队列就变成了栈；如果固定在一端只添加元素，在另一端只删除元素，就变成了队列
+
+#deque 位于 collections 包下
+'''
+from collections import deque
+print([e for e in dir(deque) if not e.startswith('_')])   #查看deque的全部方法,基本都有2个版本的方法
+'''
+
+#deque的左边(left)相当于队列头(front)，右边(right)相当于队列尾(rear)
+"""
+append 和 appendleft: 在deque的右边或左边添加元素，也就是默认在队列尾添加元素
+pop 和 popleft: 在deque的右边或左边弹出元素，也就是默认在队列尾部弹出元素
+"""
+
+
 
 
 
