@@ -547,11 +547,11 @@ re.sub(pattern, repl, string, count=0, flags=0): 该函数用于将string字符�
 #案例：演示re.sub()函数的简单用法
 '''
 import re
-my_date = '2008-08-18'
-#将my_date字符串里的中画线替换成斜线
-print(re.sub(r'-', '/', my_date))  # r是原始字符串，可避免对字符串中的特殊字符进行转义
-print(re.sub(r'-', '/', my_date, count=1))  #count放在后面
-print(re.sub(r'-', '/', my_date, 1))  #可省略count，直接输入count的值,效果同上
+my_data = '2008-08-18'
+#将my_data字符串里的中画线替换成斜线
+print(re.sub(r'-', '/', my_data))  # r是原始字符串，可避免对字符串中的特殊字符进行转义
+print(re.sub(r'-', '/', my_data, count=1))  #count放在后面
+print(re.sub(r'-', '/', my_data, 1))  #可省略count，直接输入count的值,效果同上
 '''
 
 #所执行的替换要基于被替换内容进行改变
@@ -1130,29 +1130,114 @@ heappushpop(n, iterable, key=None): 返回堆中最大的 n 个元素
 nsmallest(n, iterable, key=None): 返回堆中最小的 n 个元素
 """
 
+'''
 #案例：示范上述函数的用法
-
 from heapq import *
-my_date = list(range(10))
-my_date.append(0.5)
+my_data = list(range(10))
+my_data.append(0.5)
 #此时 my_data 依然是一个 list 列表
-print('my_data 的元素：', my_date)
+print('my_data 的元素：', my_data)
 
 #对my_data应用堆属性
-heapify(my_date)
-print('应用堆之后my_data的元素: ', my_date)
+heapify(my_data)
+print('应用堆之后my_data的元素: ', my_data)
 
-heappush(my_date, 7.2)
-print('添加7.2之后my_data的元素：', my_date)
-print('列表中最小的3个元素是:', nsmallest(3, my_date, key=None))
+heappush(my_data, 7.2)
+print('添加7.2之后my_data的元素：', my_data)
+print('列表中最小的3个元素是:', nsmallest(3, my_data, key=None))
 
 #从堆中弹出最小的元素
-print(heappop(my_date))  # 0
-print(heappop(my_date)) # 0.5
-print('弹出两个元素之后my_data的元素：', my_date)
+print(heappop(my_data))  # 0
+print(heappop(my_data)) # 0.5
+print('弹出两个元素之后my_data的元素：', my_data)
 
 #弹出最小的元素,压入指定元素
+print(heapreplace(my_data, 8.1))
+print('执行replace之后my_data的元素: ', my_data)
 
+#获取最大、最小的n个元素
+print('my_data中最大的3个元素: ', nlargest(3, my_data))
+print('my_data中最小的4个元素: ', nsmallest(4, my_data))
+'''
+
+
+
+#collections下的容器支持
+#ChainMap对象：工具类，使用链的方式将多个dict "链" 在一起，并未真正的合并它们，从而允许程序可直接获取任意一个dict所包含的key对应的value
+#ChainMap链接的dict中排在"链"前面的dict中的key具有更高的优先级
+
+'''
+#案例：释放ChainMap的用法
+from collections import ChainMap   #导入
+
+#定义三个dict对象
+a = {'Kotlin': 90, 'Python': 86}
+b = {'Go': 93, 'Python': 92}
+c = {'Swift': 89, 'Go': 87}
+
+#将三个dict对象链在一起，就像变成了一个大的dict,这里a的优先级最高,c的优先级最低
+cm = ChainMap(a, b, c)
+print(cm)
+
+#获取Kotlin对应的value
+print(cm['Kotlin'])
+#获取Python对应value
+print(cm['Python'])  #当多个dict中有重复的key时,取优先级最高的dict中的key对应的value
+#获取Go对应的value
+print(cm['Go'])  
+'''
+
+#案例：将局部范围的定义、全局范围的定义、Python内置定义链成一个ChainMap,当程序通过该ChainMap获取变量时,将会按照局部定义、全局定义、内置定义的顺序执行搜索
+'''
+from collections import ChainMap
+import builtins
+from time import localtime
+my_name = '孙悟空'
+def test():
+    my_name = 'yeeku'
+    #将 locals、globals、builtins 的变量链成ChainMap
+    pylookup = ChainMap(locals(), globals(), vars(builtins))
+    #访问my_name对应的value,优先使用局部范围的定义
+    print(pylookup['my_name'])
+    #访问len对应的value,由于在局部范围、全局范围中都找不到，因此访问内置定义的len函数
+    print(pylookup['len'])
+test()
+'''
+
+#案例：示范 优先使用运行程序的指定参数,然后是系统环境变量,最后才使用系统默认值的实现
+
+'''
+#改示例文件：ChainMap_test.py
+from argparse import Namespace
+from collections import ChainMap
+import os, argparse
+#定义默认参数
+defaults = {'color': '蓝色', 'user': 'yeeku'}
+#创建程序参数解析器
+parser = argparse.ArgumentParser()
+#为参数解析器添加-u(--user)和 -C(--color)参数
+parser.add_argument('-u', '--user')
+parser.add_argument('-c', '--color')
+#解析运行程序的参数
+Namespace = parser.parse_args
+#将程序参数转换成dict
+command_line_args = {k:v for k, v in vars(Namespace).items() if v}
+#将command_line_args(由程序参数解析而来)、os.environ(环境变量)、defaults链成ChinaMap
+combined = ChainMap(command_line_args, os.environ, defaults)
+#获取color对应的value
+print(combined['color'])
+#获取user对应的value
+print(combined['user'])
+#获取PYTHONPATH对应的value
+print(combined['PYTHONPATH'])
+#在命令行指定参数的优先级是最高的
+#python  ChainMap_test.py -c 红色 -u Charlie    #在命令行执行
+#python  ChainMap_test.py #不带参数执行该文件，程序输出的是defaults字典中key对应的值
+'''
+
+
+
+#Counter对象
 
 
 
