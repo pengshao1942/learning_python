@@ -1238,6 +1238,91 @@ print(combined['PYTHONPATH'])
 
 
 #Counter对象
+#Counter工具类：可以自动统计容器中各元素出现的次数
+#Counter本质是一个特殊的dict，它的key都是其所包含的元素，而它的value则记录了该key出现的次数
+#通过Counter并不存在的key访问value，将会输出0---代表该key出现了0次
+'''可通过任何可迭代对象参数来创建Counter对象，Counter将会自动统计各元素出现的次数，并以元素为key，出现的
+次数为value来构建Counter对象'''
+
+#案例：
+'''
+from collections import Counter
+#创建空的Counter对象
+c1 = Counter()
+#以可迭代对象(字符串)创建Counter对象
+c2 = Counter('hannah')
+print(c2)
+#以可迭代对象(列表)创建Counter对象
+c3 = Counter({'Python', 'Swift', 'Swift', 'Python', 'Kotlin', 'Python'})
+print(c3)
+#以dict来创建Counter对象，dict也是可迭代对象
+c4 = Counter({'red': 4, 'blue': 2})
+print(c4)
+#使用关键字参数的语法创建Counter
+c5 = Counter(Python=4, Swift=8)
+print(c5)
+'''
+
+#Counter继承了dict类，完全可以调用dict所支持的方法
+#Counter还提供了如下三个常用的方法：
+'''
+elements(): 该方法返回该Counter所包含的全部元素组成的迭代器
+most_common([n]): 该方法返回Counter中出现最多的n个元素
+subtract([iterable-or-mapping]): 该方法计算Counter的减法，其实就是计算减去之后各元素出现的次数
+'''
+
+#案例：示范Counter类中上述方法的用法
+'''
+from collections import Counter
+#创建Counter对象
+cnt = Counter()
+#访问并不存在的key,将输出该key的次数为0
+print(cnt['Python'])
+
+for word in ['Swift', 'Python', 'Kotlin', 'Kotlin', 'Swift', 'Go']:
+    cnt[word] += 1
+print(cnt)
+#只访问Counter对象的元素,返回全部元素组成的迭代器
+print(list(cnt.elements()))
+
+#将字符串(迭代器)转换成Counter
+chr_cnt = Counter('abracadabra')
+#获取出现最多的字母 
+print(chr_cnt.most_common(3))
+
+c = Counter(a=4, b=2, c=0, d=-2)
+d = Counter(a=1, b=2, c=3, d=4)
+#用Counter对象执行减法，其实就是减少各元素出现的次数
+c.subtract(d)
+print(c)
+
+e = Counter({'x': 2, 'y': 3, 'z': -4})
+#调用del删除key-value对，会真正删除该key-value对
+del e['y']
+print(e)
+
+#访问'w'对应的value,'w'没有出现过，因此返回0
+print(e['w'])
+#删除e['w'],删除该key-value对，删除不存在key-value对，不报错
+del e['w']
+#再次访问'w'对应的value, 'w'还是没出现，因此返回0
+print(e['w'])
+'''
+
+
+'''对Counter对象的其他常用操作：转换成set(集合)、list(列表)、dict(字典)等，还可对Counter执行加、减、交、并运算，对
+Counter进行求正、求负运算等'''
+
+'''
+加：将两个Counter对象中各key出现的次数相加，且只保留出现次数为正的元素
+减：将两个Counter对象中各key出现的次数相加，且只保留出现次数为负的元素
+交: 取两个Counter对象中都出现的key且各key对应的次数的最小数
+并：取两个Counter对象中各key对应的出现次数的最大数
+求正：只保留Counter对象中出现次数为0或正数的key-value对
+求负：只保留Counter对象中出现次数为负数的key-value对，并将出现次数改为正数
+'''
+
+#案例：示范对Counter对象的上述常用操作
 
 
 
