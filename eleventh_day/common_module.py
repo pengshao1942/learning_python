@@ -1323,8 +1323,97 @@ Counter进行求正、求负运算等'''
 '''
 
 #案例：示范对Counter对象的上述常用操作
+'''
+from collections import Counter
+
+#创建Counter对象
+c = Counter(Python=4, Swift=2, Kotlin=3, Go=-2)
+#统计Counter中所有元素出现次数的总和
+print(sum(c.values()))
+
+#将Counter转换为list，只保留各key
+print(list(c))
+#将Counter转换为set,只保留各key
+print(set(c))
+#将Counter转换为dict
+print(dict(c))
+#将Counter转换为list,列表元素都是(元素，出现次数)组
+list_of_pairs = c.items()
+print(list_of_pairs)
+#将列表元素为(元素，出现次数)组的list转换成Counter
+c2 = Counter(dict(list_of_pairs))
+print(c2)
+#获取Counter中最少出现的三个元素
+print(c.most_common())
+#清空所有key-value对
+c.clear()
+print(c)
+c = Counter(a=3, b=1, c=-1)
+d = Counter(a=1, b=-2, d=3)
+#对Counter执行加法
+print(c + d)
+#对Counter执行减法，2个Counter中都有的元素才运算
+print(c - d)
+Counter({'a': 2})
+#对Counter执行交运算
+print(c & d)
+print(c | d)
+print(+c)
+print(-d)
+'''
 
 
+
+#defaultdict对象
+#defaultdict是dict的子类，也可被当成dict来使用，dict支持的功能，defaultdict基本都支持
+#defalutdict可以提供一个default_factory属性，该属性所指定的函数负责为不存在的key来生成value，故相比dict它可以访问不存在的key
+
+#案例：对比defalutdict 和 dict 在访问不存在的key对应的value时的处理情况
+'''
+from collections import defaultdict
+
+my_dict = {}
+#使用int作为defaultdict的default_factory
+#当key不存在时,将会返回int函数的返回值
+my_defaultdict = defaultdict(int)
+print(my_defaultdict['a'])   #不会报异常，会赋予不存在的key一个value，value是defaultdict(int)返回的值
+print(my_dict['a'])  #会报异常
+'''
+
+#案例：为defaultdict中不存在的key设置默认的value
+#假如程序中包含多个key-value对，有些key是重复的，现需要对这些key-value对进行整理；key对应一个list，该list中包含这组数据中该key对应的所有value
+
+'''
+from collections import defaultdict
+s = [('Python', 1), ('Swift', 2), ('Python', 3), ('Swift', 4), ('Python', 9)]
+#创建defaultdict，设置由list函数来生成默认值
+d = defaultdict(list)  
+for k, v in s:
+    #直接访问 defaultdict 中指定的key对应的value即可
+    #如果该key不存在，defaultdict会自动为该key生成默认值
+    d[k].append(v)
+print(list(d.items()))
+'''
+
+
+#namedtuple工厂函数
+'''#namedtuple()是一个工厂函数，使用该函数可以创建一个tuple类的子类，该子类可以为tuple的每个元素都指定字段名
+,这样程序就可以根据字段名来访问namedtuple的各元素了'''
+#如果需要，程序依然可以根据索引来访问 namedduple的各元素
+
+#namedtuple函数的语法格式如下
+'''namedtuple(typename, field_name, *, verbose=False, rename=False, module=None)'''
+
+"""各项参数说明
+typename: 该参数指定所创建的tuple子类的类名，相当于用户定义了一个子类
+field_names: 该参数是一个字符串序列,如['x', 'y'],也可直接使用单个字符串代表所有字段名，多个字段名用空格、逗号隔开。任何有效的Python标识符都可作为字段名
+rename: 如果将该参数设为True，那么无效的字段名将会被自动替换为位置名。例如：指定['abc', 'def', 'ghi', 'abc'],它将会被替换为['abc', '_1', 'ghi', '_3'],
+            因为def字段名是关键字，而abc字段名重复了
+verbose: 如果该参数被设置为True,那么当该子类被创建之后，该类定义就会被立即打印出来
+module: 如果设置了该参数，那么该类将位于该模块下，因此该自定义类的 __module__ 属性将被设为该参数值
+"""
+
+#示例：使用namedtuple工厂函数来创建命名元组
 
 
 
