@@ -1414,6 +1414,20 @@ module: 如果设置了该参数，那么该类将位于该模块下，因此该
 """
 
 #示例：使用namedtuple工厂函数来创建命名元组
+from collections import namedtuple
+#定义命名元组类： Point
+Point = namedtuple('Point', ['x', 'y'])
+#初始化Point对象，既可用位置参数，也可用命令参数
+p = Point(11, y=22)
+#像普通元组一样根据索引访问元素
+print(p[0] + p[1])
+#执行元组捷豹，按元素的位置解包
+a, b = p
+print(a, b)
+#根据字段名访问各元素
+print(p.x + p.y)
+print(p)
+
 
 
 
