@@ -1519,6 +1519,142 @@ print(d.popitem(last=False)[0])
 '''
 
 
+#函数相关模块
+#itertools 模块的功能函数: 主要包含了一些用于生成迭代器的函数
+'''
+>>import itertools
+>>[e for e in dir(itertools) if not e.startswith('_')]
+'''
+
+#itertools模块中三个生成无限迭代器的函数
+"""
+count(start, [step]): 生成start, start+step, start+2*step, ...的迭代器，其中step默认为1，
+        比如使用count(10)生成的迭代器包含：10, 11, 12, 13, 14, ...
+cycle(p): 对序列p生成无限循环p0, p1, ..., p0, p1, ...的迭代器。
+        比如使用cycle('ABCD')生成的迭代器包含: A,B,C,D,A,B,C,D, ...
+repeat(elem [,n]): 生成无限个elem元素重复的迭代器，如果指定了参数n，则只生成n个elem元素。
+        比如使用repeat(10, 3)生成的迭代器包含: 10, 10, 10
+"""
+
+#示例：使用上面三个函数来生成迭代器
+'''
+import itertools as it
+
+#使用count(10, 3)生成10、13、16、...的迭代器
+for e in it.count(10, 3):
+    print(e)
+    #用于跳出无限循环
+    if e > 20:
+        break
+print('----------')
+
+my_counter = 0   #定义个数
+#cycle用于对序列生成无限循环的迭代器
+for e in it.cycle(['Python', 'Kotlin', 'Swift']):
+    print(e)
+    #用于跳出无限循环
+    my_counter += 1
+    if my_counter > 7:
+        break
+print('...........')
+
+#repeat用于生成n个元素重复的迭代器
+for e in it.repeat('Python', 3):
+    print(e)
+'''
+
+
+#itertools模块中其他常用的迭代器函数：
+"""
+accumulate(p[,func]): 默认生成根据序列p元素累加的迭代器，如：p0, p0+p1, p0+p1+p2, ... 序列,
+        如果指定了func函数，则用func函数来计算下一个元素的值
+chain(p, q,...): 将多个序列里的元素 "链" 在一起生成新的序列
+compress(data, selectors): 根据selectors序列的值对data序列的元素进行过滤。如果selector[0]为真，
+        则保留data[0]；否则不保留；如果selector[1]为真，则保留data[1]......依此类推
+dropwhile(pred, seq): 使用pred函数对seq序列进行过滤，从seq中第一个使用pred函数计算为False的元素开始，
+        保留从该元素到序列结束的全部元素
+takewhile(pred, seq): 该函数和上一个函数恰好相反。使用pred函数对seq序列进行过滤，从seq中第一个使用pred函数计算
+        为False的元素开始，去掉从该元素到序列结束的全部元素
+filterfalse(pred, seq): 使用pred函数对seq序列进行过滤，保留seq中使用pred计算为True的元素。比如
+        filterfalse(lambda x:x%2,range(10)), 得到 0,2,4,6,8
+islice(seq, [start,] stop [, step]): 其功能类似于序列的 slice 方法，实际上就是返回 seq[start:stop:step]的结果
+startmap(func, seq): 使用func对seq序列的每个元素进行计算，将计算结果作为新的序列元素。当使用func计算序列元素时，
+        支持序列解包。比如seq序列的元素长度为3，那么func可以是一个接收三个参数的函数，该函数将会根据这三个参数来计算
+        新序列的元素
+zip_longest(p, q, ...): 将p、q等序列中的元素按索引合并成元组，这些元组将作为新序列的元素
+"""
+
+'''
+#示例：上述函数的测试
+import itertools as it
+#默认使用累加的方式计算下一个元素的值
+for e in it.accumulate(range(6)):  #这里p0就是0,p1就是1，一直到p5是5
+    print(e, end=', ')
+print('\n----------')
+#使用 x*y 的方式(即指定了func函数来计算迭代器下一个元素的值
+for e in it.accumulate(range(1, 6), lambda x, y: x * y):  #lambda表达式就是func函数的简写
+    print(e, end=', ') # 1*1, 2*1, 3*2*1, 4*3*1, 5*4*3*2*1
+print('\n-----------')
+
+#将两个序列"链"在一起，生成新的迭代器
+for e in it.chain(['a', 'b'], ['Kotlin', 'Swift']):
+    print(e, end=', ')
+print('\n-----------')
+
+#根据第二个序列来筛选第一个序列的元素
+#由于第二个序列只有中间两个元素为1(True)，因此第一个序列只保留中间两个元素
+for e in it.compress(['a', 'b', 'Kotlin', 'Swift'], [0, 1, 1, 0]):  #0为False
+    print(e, end=', ')
+print('\n-----------')
+
+#获取序列中从长度不小于4的元素开始(包括该元素)到结束的所有元素
+for e in it.takewhile(lambda x:len(x)<4, ['a', 'b', 'Kotlin', 'x', 'y']):
+    print(e, end=', ')
+print('\n-----------')
+#使用pow函数对原序列的元素进行计算，将计算结果作为新序列的元素
+for e in it.starmap(pow, [(2, 5), (3, 2), (10, 3)]):   #pow()是求幂函数
+    print(e, end=', ')
+print('\n----------')
+
+#将'ABCD'、'xy'的元素按索引合并成元组，这些元组将作为新序列的元素
+#长度不够的序列元素使用'-'字符代替
+for e in it.zip_longest('ABCD', 'xy', fillvalue='-'):  #0-4个索引，只有0,1两个索引匹配
+    print(e, end=', ')
+'''
+
+
+#itertools模块中用于生成排列组合的工具函数
+"""
+product(p, q, ...[repeat=1]):用序列p、q、...中的元素进行排列组合，就相当于使用嵌套循环组合
+permutations(p[, r]): 从序列p中取出r个元组组成全排列，将排列得到的元组作为新迭代器的元素
+combinations(p, r): 从序列p中取出r个元素组成全组合，元素不允许重复，将组合得到的元组作为新迭代器的元素
+combinations_with_replacement(p, r):从序列p中取出r个元素组成全组合，元素允许重复,将组合得到的元组作为新迭代器的元素
+"""
+
+#示例：示范4个函数的用法
+'''
+import itertools as it
+#使用两个序列进行排列组合
+for e in it.product('AB', 'CD'):
+    print(''.join(e), end=', ')  #join方法用于将元素连接成一个字符串
+print('\n-----------')
+#使用一个序列，重复两次进行全排列
+for e in it.product('AB', repeat=2):  #即  'AB' 和 'AB' 中元素两两随机组合
+    print(''.join(e), end=', ')
+print('\n-----------')
+#从序列中取两个元素进行排列
+for e in it.permutations('ABCD', 2):
+    print(''.join(e), end=', ')
+print('\n----------')
+#从序列中取两个元素进行组合，元素不允许重复
+for e in it.combinations('ABCD', 2):
+    print(''.join(e), end=', ')
+print('\n----------')
+#从序列中取两个元素进行组合，元素允许重复
+for e in it.combinations_with_replacement('ABCD', 2):
+    print(''.join(e), end=', ')
+'''
+
 
 
 
