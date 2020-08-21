@@ -1414,6 +1414,8 @@ module: 如果设置了该参数，那么该类将位于该模块下，因此该
 """
 
 #示例：使用namedtuple工厂函数来创建命名元组
+
+'''
 from collections import namedtuple
 #定义命名元组类： Point
 Point = namedtuple('Point', ['x', 'y'])
@@ -1421,12 +1423,107 @@ Point = namedtuple('Point', ['x', 'y'])
 p = Point(11, y=22)
 #像普通元组一样根据索引访问元素
 print(p[0] + p[1])
-#执行元组捷豹，按元素的位置解包
+#执行元组解包，按元素的位置解包
 a, b = p
 print(a, b)
 #根据字段名访问各元素
 print(p.x + p.y)
 print(p)
+'''
+
+
+#命名元素的其他方法和属性：
+"""
+_make(iterable): 类方法。该方法用于根据序列或可迭代对象创建命名元组对象
+_asdict(): 将当前命名元组对象转换为OrderedDict字典
+_replace(**kwargs): 替换命令元组中一个或多个字段的值
+_source: 该属性返回定义该命名元组的源代码
+_fields：该属性返回该命名元组中所有字段名组成的元组
+"""
+
+#示例：示范上面方法和属性的用法
+'''
+from collections import namedtuple
+
+Point = namedtuple('Point', ['x', 'y'])
+
+my_data = ['East', 'North']
+#创建命名元组对象
+p2 = Point._make(my_data)
+print(p2)
+#将命名元组对象转换成OrderedDict
+print(p2._asdict())
+#替换命名元组对象的字段值
+p2._replace(y='South')
+print(p2)
+#输出p2包含的所有字段
+print(p2._fields)
+#定义一个命名元组类
+Color = namedtuple('Color', 'red green blue')
+#再定义一个命名元组类，其字段有Point的字段加上Color的字段组成
+Pixel = namedtuple('Pixel', Point._fields + Color._fields)
+#创建Pixel对象，分别为x、y、red、green、blue字段赋值
+pix = Pixel(11, 22, 128, 255, 0)
+print(pix)
+'''
+
+
+#OrderedDict对象: 也是dict的子类，它可以 "维护" 添加key-value对的顺序。即先添加的key-value对排在前面，后添加的key-value对排在后面
+#即使两个OrderedDict中的key-value对完全相同，但只要它们的顺序不同，程序在判断它们是否相等时也依然会返回false
+
+#示例：
+'''
+from collections import OrderedDict
+#创建OrderedDict对象
+dx = OrderedDict(b=5, c=2, a=7)
+print(dx)
+d = OrderedDict()
+#向OrderedDict中添加key-value对
+d['Python'] = 89
+d['Swift'] = 92
+d['Kotlin'] = 97
+d['Go'] = 87
+#遍历OrderedDict的key-value对
+for k, v in d.items():
+    print(k, v)
+
+#即使两个OrderedDict中的key-value对完全相同，但只要它们的顺序不同，程序在判断它们是否相等时也依然会返回false
+#创建普通的dict(字典)对象
+my_data = {'Python': 20, 'Swift': 32, 'Kotlin': 43, 'Go': 25}
+#创建基于key排序的OrderedDict
+d1 = OrderedDict(sorted(my_data.items(), key=lambda t: t[0]))
+#创建基于value排序的OrderedDict
+d2 = OrderedDict(sorted(my_data.items(), key=lambda t: t[1]))
+print(d1)
+print(d2)
+print(d1 == d2)  #返回False
+'''
+
+#由于OrderedDict是有序的，提供了两个方法：
+"""
+popitem(last=True): 默认弹出并返回最右边(最后加入)的key-value对：如果将last参数设为False,则弹出并返回最左边(最先加入)的key-value对
+move_to_end(key, last=True):默认将指定的key-value对移动到最右边(最后加入)：如果将last改为False,则将指定的key-value对移动到最左边(最先加入)
+"""
+
+'''
+from collections import OrderedDict
+d = OrderedDict.fromkeys('abcde')
+#将b对应的key-value对移动到最右边(最后加入)
+d.move_to_end('b')
+print(d.keys())
+#将b对应的key-value对移动到最左边(最先加入)
+d.move_to_end('b', last=False)
+print(d.keys())
+#弹出并返回最右边(最后加入)的key-value对
+print(d.popitem(last=False)[0])
+'''
+
+
+
+
+
+
+
 
 
 
