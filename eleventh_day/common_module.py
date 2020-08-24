@@ -1773,6 +1773,7 @@ print(c.alive)
 
 
 #示例：示范@total_ordering类装饰器的作用
+'''
 from functools import *
 @total_ordering
 class User:
@@ -1788,14 +1789,123 @@ class User:
             return NotImplemented
         #根据name判断是否相等(都转换成小写比较、忽略大小写)
         return self.name.lower() == other.lastname.lower()
-    def __It__(self, other):
+    def __lt__(self, other):
         if not self._is_valid_operand(other):
             return NotImplemented
         #根据name判断是否相等(都转换成小写比较、忽略大小写)
         return self.lastname.lower() < other.lastname.lower()
 
-#打印被装饰之后的User类中的__gt__方法
+#打印被装饰之后的User类中的__gt__方法,此时的__gt__方法是根据__lt__方法生产出来的
 print(User.__gt__)
+'''
+
+
+#@singledispatch函数装饰器的作用：根据函数参数类型转向调用另一个函数，从而实现函数重载的功能
+#使用@singledispatch装饰器修饰之后的函数就有了register()方法:用于为指定类型注册被转向调用的函数
+#示范@singledispatch函数装饰器的用法
+
+'''
+from functools import *
+@singledispatch
+def test(arg, verbose):
+    if verbose:
+        print("默认参数为：", end=" ")
+    print(arg)
+#限制test函数的第一个参数为int类型的函数版本
+@test.register(int)  #register()方法来注册被转向调用的函数
+def _(argu, verbose):
+    if verbose:
+        print("整型参数为：", end=" ")
+    print(argu)
+test('Python', True)  #Python是str类型，此时调用函数本身
+#调用第一个参数为int类型的版本
+test(20, True)  #20是int类型，此时会调用被@test.register(int)修饰的函数 _
+#限制test函数的第一个参数为list类型的函数版本
+@test.register(list)  #转向调用list类型
+def _(argb, verbose=False):
+    if verbose:
+        print("列表中所有元素为:")
+    for i, elem in enumerate(argb):
+        print(i, elem, end=" ")
+test([20, 10, 16, 30, 14], True)  #即可以多次使用@test.register()装饰器来绑定被转向调用的函数
+print("\n-------------------")
+'''
+
+#@singledispatch也允许为参数的多个类型绑定同一个被转向调用的函数；只有使用多个@函数名》register()装饰器即可
+
+'''
+from functools import *
+from decimal import Decimal
+@singledispatch
+def test(arg, verbose):
+    if verbose:
+        print("默认参数为：", end=" ")
+    print(arg)
+#限制test函数的第一个参数为float或Decimal类型的函数版本
+@test.register(float)
+@test.register(Decimal)
+def test_num(arg, verbose=False):
+    if verbose:
+        print("参数的一半为: ", end=" ")
+    print(arg / 2)
+
+#当程序为@singledispatch 函数执行绑定之后，就可以通过该函数的dispatch(类型)方法来找到该类型所对应转向的函数
+
+#通过test.dispatch(类型)即可获取它转向的函数
+
+#当test函数的第一个参数为float时将转向调用test_num
+print(test_num is test.dispatch(float))
+#当test函数的第一个参数为Decimal时将转向调用test_num
+print(test_num is test.dispatch(Decimal))
+#直接调用test并不等于调用test_num
+print(test_num is test)
+
+#访问@singledispatch函数所绑定的全部类型及对应的dispatch函数，则可通过该函数的只读属性registry来实现，该属性相当于一个只读的dict对象
+#获取test函数所绑定的全部类型
+print(test.registry.keys())
+#获取test函数为int类型绑定的函数
+print(test.registry[int])
+'''
+
+
+'''@wraps(wrapped_func)函数装饰器与update_wrapper(wrapper, wrapped_func)函数的作用是一样的：
+都用于让包装函数看上去就像被包装函数(主要就是让包装函数的__name__、__doc__属性与被包装函数保持一致)。
+区别是：@wraps(wrapped_func)函数装饰器直接修饰包装函数，因此不需要传入包装函数作为参数;
+而update_wrapper(wrapper,wrapped_func)函数装饰器直接修饰包装函数，因此不需要传入包装函数作为参数；而update_wrapper(wrapper, wrapped_func)
+则需要同时传入包装函数、被包装函数作为参数'''
+
+#示范@wraps(wrapped_func)函数装饰器的用法
+'''
+from functools import wraps
+
+def fk_decorator(f):
+    #让wrapper函数看上去就像f函数
+    #@wraps(f)   #作用是：让被包装函数(这里是wrapper函数)就像f函数
+    def wrapper(*args, **kwds):
+        print('调用被装饰函数')
+        return f(*args, **kwds)
+    return wrapper
+@fk_decorator  #修饰test()函数
+def test():
+    """test函数的说明信息"""
+    print('执行test函数')
+test()
+print(test.__name__)
+print(test.__doc__)
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
