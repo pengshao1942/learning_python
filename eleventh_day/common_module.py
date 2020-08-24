@@ -1744,6 +1744,7 @@ print(int('10010', 2))
 """partialmethod()与partial()函数的作用基本相似，区别是: partial()函数用于为函数的部分参数绑定值；而partialmethod()函数则用于为类中方法的部分参数绑定值"""
 
 #示范partialmethod()函数的用法
+'''
 from functools import *
 class Cell:
     def __init__(self):
@@ -1754,6 +1755,7 @@ class Cell:
         return self._alive
     def set_state(self, state):
         self._alive = bool(state)
+    #使用partialmethod()为类中方法的部分参数绑定值
     #指定set_alive()方法，就是将set_state()方法的state参数指定为True
     set_alive = partialmethod(set_state, True)
     #指定set_dead()方法，就是将set_state()方法的state参数指定为False
@@ -1767,7 +1769,33 @@ print(c.alive)
 #相当于调用c.set_state(False)
 c.set_dead()
 print(c.alive)
+'''
 
+
+#示例：示范@total_ordering类装饰器的作用
+from functools import *
+@total_ordering
+class User:
+    def __init__(self, name):
+        self.name = name
+    def __repr__(self):
+        return 'User[name = %s' % self.name
+    #根据是否有name属性来决定是否可比较
+    def _is_valid_operand(self, other):
+        return hasattr(other, "name")
+    def __eq__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        #根据name判断是否相等(都转换成小写比较、忽略大小写)
+        return self.name.lower() == other.lastname.lower()
+    def __It__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        #根据name判断是否相等(都转换成小写比较、忽略大小写)
+        return self.lastname.lower() < other.lastname.lower()
+
+#打印被装饰之后的User类中的__gt__方法
+print(User.__gt__)
 
 
 
