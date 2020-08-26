@@ -89,4 +89,81 @@ app.mainloop()
 自动为该Widget组件创建一个Tk窗口'''
 
 
-#布局管理器
+
+#布局管理器：负责管理各(GUI)组件的大小和位置。且当用户调整了窗口的大小之后，布局管理器还会自动调整窗口中各组件的大小和位置
+#Pack布局管理器：当程序向容器中添加组件时，这些组件会依次向后排列，排列方向既可是水平的，也可是垂直的
+
+#示范Pack布局的用法：向窗口中添加三个Label组件
+'''
+from tkinter import *
+#创建窗口并设置窗口标题
+root = Tk()
+#设置窗口标题
+root.title('Pack布局')
+for i in range(3):
+    lab = Label(root, text="第%d个Label" % (i + 1), bg='#eeeeee')
+    #调用pack进行布局(默认的布局)
+    lab.pack()  
+#启动主窗口的消息循环
+root.mainloop()
+'''
+
+#通过help(tkinter.Label.pack)命令来查看pack()方法支持的选项
+'''
+anchor: 当可用空间大于组件所需求的大小时，该选项决定组件被放置在容器的何处。该选项支持9个方位:
+        N、E、S、W、NW、NE、SW、SE、CENTER
+expand: 该bool值指定当父容器增大时是否拉伸组件
+fill: 设置组件是否沿水平或垂直方向填充。支持选项：NONE、X、Y、BOTH 四个值
+ipadx: 指定组件在x方向(水平)上的内部留白(padding)
+ipadv: 指定组件在y方向(水平)上的内部留白(padding)
+padx: 指定组件在x方向(水平)上与其他组件的间距
+pady: 指定组件在y方向(水平)上与其他组件的间距
+side: 设置组件的添加位置，可以设置为TOP、BOTTOM、LEFT 或 RIGHT四个值的其中之一
+'''
+
+
+#案例：当程序界面比较复杂时，需要使用多个容器(Frame)分开布局，然后再将Frame添加到窗口中
+
+from tkinter import *
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        #创建第一个容器
+        fm1 = Frame(self.master)
+        #该容器放在左边排列
+        fm1.pack(side=LEFT, fill=BOTH, expand=YES)
+        #向fm1中添加三个按钮
+        #设置按钮从顶部开始排列，且按钮只能在水平(X)方向上填充
+        Button(fm1, text='第一个').pack(side=TOP, fill=X, expand=YES)
+        Button(fm1, text='第二个').pack(side=TOP, fill=X, expand=YES)
+        Button(fm1, text='第三个').pack(side=TOP, fill=X, expand=YES)
+
+        #创建第二个容器
+        fm2 = Frame(self.master)
+        #该容器放在左边排列，就会挨着fm1
+        fm2.pack(side=LEFT, padx=10, expand=YES)
+        #向fm2中添加三个按钮
+        #设置按钮从右边开始排列
+        Button(fm2, text='第一个').pack(side=RIGHT, fill=Y, expand=YES)
+        Button(fm2, text='第二个').pack(side=RIGHT, fill=Y, expand=YES)
+        Button(fm2, text='第三个').pack(side=RIGHT, fill=Y, expand=YES)
+
+        #创建第三个容器
+        fm3 = Frame(self.master)
+        #该容器放在右边排列，就会挨着fm1
+        fm3.pack(side=RIGHT, padx=10, fill=BOTH, expand=YES)
+        #向fm3中添加三个按钮
+        #设置按钮从底部开始排列，且按钮只能在垂直(Y)方向上填充
+        Button(fm3, text='第一个').pack(side=BOTTOM, fill=Y, expand=YES)
+        Button(fm3, text='第二个').pack(side=BOTTOM, fill=Y, expand=YES)
+        Button(fm3, text='第三个').pack(side=BOTTOM, fill=Y, expand=YES)
+
+root = Tk()  #主窗口
+root.title("Pack布局")
+display = App(root)
+root.mainloop()
+
+
+#无论多复杂、古怪的界面，大多可分解为水平排列和垂直排列，再使用Pack布局通过多个容器进行组合
