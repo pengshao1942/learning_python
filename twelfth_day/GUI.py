@@ -91,6 +91,7 @@ app.mainloop()
 
 
 #布局管理器：负责管理各(GUI)组件的大小和位置。且当用户调整了窗口的大小之后，布局管理器还会自动调整窗口中各组件的大小和位置
+
 #Pack布局管理器：当程序向容器中添加组件时，这些组件会依次向后排列，排列方向既可是水平的，也可是垂直的
 
 #示范Pack布局的用法：向窗口中添加三个Label组件
@@ -123,7 +124,7 @@ side: 设置组件的添加位置，可以设置为TOP、BOTTOM、LEFT 或 RIGHT
 
 
 #案例：当程序界面比较复杂时，需要使用多个容器(Frame)分开布局，然后再将Frame添加到窗口中
-
+'''
 from tkinter import *
 class App:
     def __init__(self, master):
@@ -164,6 +165,56 @@ root = Tk()  #主窗口
 root.title("Pack布局")
 display = App(root)
 root.mainloop()
+'''
+
+#无论多复杂、古怪的界面，大多可分解为水平排列和垂直排列，再使用Pack布局通过多个容器(Frame)进行组合
 
 
-#无论多复杂、古怪的界面，大多可分解为水平排列和垂直排列，再使用Pack布局通过多个容器进行组合
+
+
+#Grid布局管理器
+'''Grid布局把组件空间分解成一个网格进行维护，即按照行、列的方式排列组件，组件位置由其所在的行号和列号决定;
+行号相同而列号不同的几个组件会被依次 上下排列 ，列号相同而行号不同的几个组件会被依次 左右排列 '''
+
+#使用Grid布局的过程就是为各个组件指定行号和列号的过程，不需要为每个网格都指定大小，Grid布局会自动为它们设置合适的大小
+
+#程序调用组件的 grid() 方法就进行 Grid 布局，在调用grid()方法时可传入多个选项，该方法支持的ipadx、ipady、padx、pady与pack()[Pack布局管理器]方法的这些选项相同
+
+#grid()方法额外增加了如下选项：
+'''
+column: 指定将组件放入哪列。第一列的索引为0
+columnspan: 指定组件横跨多少列
+row: 指定组件放入哪行。第一行的索引为0
+rowspan: 指定组件横跨多少行
+sticky: 类似于pack()方法的anchor选项,同样支持9个方向的表示值
+'''
+
+#示例：使用Grid布局来实现一个计算器界面
+from tkinter import *
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        #创建一个输入组件
+        e = Entry(relief=SUNKEN, font=('Courier New', 24), width=25)  #指定字体为 Courier New
+        #对该输入组件使用Pack布局的pack()方法，Grid布局也有pack()方法，放在容器顶部
+        e.pack(side=TOP, pady=10)
+
+        p = Frame(self.master)  #创建Frame容器
+        p.pack(side=TOP)
+        #定义字符串元组
+        names = ("0", "1", "2", "3"
+            , "4", "5", "6", "7", "8", "9"
+            , "+", "-", "*", "/", ".", "=")
+        #遍历字符串元组
+        for i in range(len(names)):
+            #创建Button,将Button放入p组件(容器)中
+            b = Button(p, text=names[i], font=('Verdana', 20), width=6)  #指定字体和字体大小，指定宽度为6
+            b.grid(row=i // 4, column=i % 4)
+root = Tk()
+root.title("Grid布局")
+App(root)
+#启动主窗口的消息循环
+root.mainloop()
+
