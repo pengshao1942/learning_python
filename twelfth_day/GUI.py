@@ -403,7 +403,9 @@ root.mainloop()
 
 #改进型计算器，可以实现简单的计算功能
 
+'''
 from tkinter import *
+
 class App:
     def __init__(self, master):
         self.master = master
@@ -428,6 +430,7 @@ class App:
             #为鼠标左键的双击事件绑定事件处理方法
             if b['text'] == '=': 
                 b.bind('<Double-1>', self.clean)
+
     def click(self, event):  #创建click方法
         #如果用户单击的是数字键或点号
         if(event.widget['text'] in ('0', '1', '2', '3', '4', '5', '6', '7', '8'\
@@ -448,6 +451,7 @@ class App:
             #使用eval函数计算表达式的值
             self.show['text'] = str(eval(self.expr))
             self.expr = None
+
     #当双击 "=" 按钮时，程序清空计算结果，将表达式设为None
     def clean(self, event):   #创建clean方法
         self.expr = None      #清空表达式
@@ -457,4 +461,60 @@ root = Tk()
 root.title("计算器")
 App(root)
 root.mainloop()
+'''
+
+
+
+#Tkinter常用组件
+#ttk组件：作为一个模块放在tkinter包下，相比GUI组件更美化，功能更强大；导入即可使用
+
+#示例：使用ttk组件
+'''
+from tkinter import *
+from tkinter import ttk
+
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+#下面被注释的是使用Listbox，即直接使用tkinter组件的代码；没注释的是使用ttk组件的代码
+    def initWidgets(self):
+
+        #ttk使用Combobox取代了Listbox
+        cb = ttk.Combobox(self.master, font=24)
+        #为Combobox设置列表项
+        cb['values'] = ('Python', 'Swift', 'Kotlin')
+
+        #cb = Listbox(self.master, font=24)  #列表项
+        #为Listbox设置列表项
+        #for s in ('Python', 'Swift', 'Kotlin'):
+        #    cb.insert(END, s)
+
+        cb.pack(side=LEFT, fill=X, expand=YES)
+
+        f = ttk.Frame(self.master)
+        #f = Frame(self.master)
+
+        f.pack(side=RIGHT, fill=BOTH, expand=YES)
+
+        lab = ttk.Label(self.master, text='我的标签', font=24)
+        #lab = Label(self.master, text='我的标签', font=24)
+
+        lab.pack(side=TOP, fill=BOTH, expand=YES)
+
+        bn = ttk.Button(self.master, text='我的按钮')
+        #bn = Button(self.master, text='我的按钮')
+        bn.pack()
+
+root = Tk()
+root.title('简单事件处理')
+App(root)
+root.mainloop()
+'''
+#ttk组件版本风格更接近现代，更接近Windows7以上版本的风格，更美观，就是ttk组件的优势
+
+
+
+
+
 
