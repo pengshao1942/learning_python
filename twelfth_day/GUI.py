@@ -190,6 +190,7 @@ sticky: 类似于pack()方法的anchor选项,同样支持9个方向的表示值
 '''
 
 #示例：使用Grid布局来实现一个计算器界面
+'''
 from tkinter import *
 class App:
     def __init__(self, master):
@@ -216,5 +217,244 @@ root = Tk()
 root.title("Grid布局")
 App(root)
 #启动主窗口的消息循环
+root.mainloop()
+'''
+
+
+#Place布局管理器：绝对布局，要求程序显式指定每个组件的绝对位置或相对于其他组件的位置
+#使用Place布局，调用相应组件的place()方法即可。
+#place()方法的常用选项：
+'''
+x：指定组件的 X 坐标。x为0代表位于最左边,单位为像素(pixel)
+y: 指定组件的 Y 坐标。y为0代表位于最右边,单位为像素(pixel)
+relx: 指定组件的X坐标，以父容器总宽度为单位1，该值应该在0.0~1.0之间，其中0.0代表位于窗口最左边，1.0代表位于
+        窗口最右边，0.5代表位于窗口中间
+rely: 指定组件的Y坐标，以父容器总高度为单位1，该值应该在0.0~1.0之间，其中0.0代表位于窗口最上边，1.0代表位于
+        窗口最下边，0.5代表位于窗口中间
+width: 指定组件的高度，以 pixel 为单位
+height: 指定组件的高度，以 pixel为单位
+relwidth: 指定组件的宽度，以父容器总宽度为单位1，该值应该在0.1~1.0之间，其中1.0代表整个窗口宽度，0.5代表窗口的一半宽度
+relheight: 指定组件的高度，以父容器总高度为单位1，该值应该在0.1~1.0之间，其中1.0代表整个窗口高度，0.5代表窗口的一半高度
+bordermode: 该属性支持 "inside" 或 "outside" 属性值，用于指定当设置组件的宽度、高度时是否计算该组件的边框宽度
+'''
+
+#Tkinter容器的坐标系统的原点(0,0)在左上角，其中X轴向右延伸，Y轴向下延伸
+#通过x指定的坐标值越大，该组件就越靠右，通过y指定的坐标值越大，该组件就越靠下
+
+#示例：使用Place布局管理器，动态计算各Label的大小和位置，并通过place()方法设置各Label的大小和位置
+'''
+from random import randrange
+from tkinter import *
+import random
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        #定义字符串元组
+        books = ('疯狂Python讲义', '疯狂Swift讲义', '疯狂Kotlin讲义',\
+            '疯狂Java讲义', '疯狂RUby讲义')
+        for i in range(len(books)):
+            #生成三个随机数
+            ct = [random.randrange(256) for x in range(3)]
+            grayness = int(round(0.299*ct[0] + 0.587*ct[1] + 0.114*ct[2]))
+            #将元组中的三个随机数格式化成十六进制数，转换成颜色格式；即随机生成颜色
+            bg_color = "#%02x%02x%02x" % tuple(ct)
+            #创建Label,设置背景色和前景色
+            lb = Label(root, text = books[i], fg = 'White' if grayness < 125 else 'Black', bg = bg_color)
+            #使用place()设置该Lable的大小和位置
+            lb.place(x = 20, y = 36 + i*36, width=180, height=30)  #调用place()方法执行Place布局
+
+root = Tk()
+root.title("Place布局")
+#设置窗口的大小和位置
+#widthxheight+x_offset+y_offset
+root.geometry("250x250+30+30")  #设置窗口的大小和位置，查看帮助：help(tkinter.Tk.geometry)
+App(root)
+root.mainloop()
+'''
+
+
+#事件处理：即点击按钮可影响用户的操作，点击按钮有响应
+#简单的事件处理通过 command 选项来绑定，该选项绑定为一个函数或方法，当用户单击指定按钮时，通过该command选项绑定的函数或方法就会被触发
+
+#示例：为按钮的command绑定事件处理方法
+'''
+from tkinter import *
+import random
+
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        self.label = Label(self.master, width=30)
+        self.label['font'] = ('Courier', 20)
+        self.label['bg'] = 'white'
+        self.label.pack()
+        bn = Button(self.master, text='点击', command=self.change)  #command的使用
+        bn.pack()
+    def change(self):
+        self.label['text'] = '欢迎学习Python'
+        #生成三个随机数
+        ct = [random.randrange(256) for x in range(3)]
+        grayness = int(round(0.299*ct[0] + 0.587*ct[1] + 0.114*ct[2]))
+        #将元组中的三个随机数格式化成十六进制数，转换成颜色格式
+        bg_color = "#%02x%02x%02x" % tuple(ct)
+        self.label['bg'] = bg_color
+        self.label['fg'] = 'black' if grayness > 125 else 'white'
+root = Tk()
+root.title("简单事件处理")
+App(root)
+root.mainloop()
+'''
+
+
+#事件绑定：除了按钮单击的事件处理，更灵活的事件绑定方式，如：鼠标移动、按键事件等
+#所有Widget组件都提供了一个bind()方法，该方法可以为"任意"事件绑定事件处理方法
+#show()方法是显示
+#示例：为按钮的单击、双击事件绑定事件处理方法
+
+'''
+from tkinter import *
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        self.show = Label(self.master, width=30, bg='white', font=('times', 20))
+        self.show.pack()
+        bn = Button(self.master, text='单击我或双击我')
+        bn.pack(fill=BOTH, expand=YES)
+        #为左键单击事件绑定处理方法
+        bn.bind('<Button-1>', self.one) #<Button-1> 代表鼠标左键单击事件
+        #为左键双击事件绑定处理方法
+        bn.bind('<Double-1>', self.double) #<Double-1> 代表鼠标左键双击事件
+    def one(self, event):
+        self.show['text'] = "左键单击：%s" % event.widget['text']
+    def double(self, event):
+        print("左键双击，退出程序:", event.widget['text'])
+        import sys; sys.exit()
+
+root = Tk()
+root.title('简单绑定')
+App(root)
+root.mainloop()
+'''
+
+
+#代表tkinter事件的字符串大致遵循如下格式：
+'''<modifier-type-detail>
+其中type 是事件字符串的关键部分，用于描述事件的种类，比如鼠标、键盘事件等
+modifier 则代表事件的修饰部分，比如单击、双击等
+detail 用于指定事件的详情，比如指定鼠标左键、右键、滚轮等
+'''
+#tkinter支持的鼠标、键盘事件按：左、中、右、上、下 来实现
+'''如： 鼠标的单击事件：<Button-1> --> <Button-5>
+        按住鼠标的移动事件：<B1-Motion> --> <B3-Motion>
+        鼠标按键的释放事件：<ButtonRelease-1> --> <ButtonRelease-3>
+        用户双击某个鼠标键的事件：<Double-1> --> <Double-5>
+        鼠标进入组件的事件：<Enter>   不是按下回车键事件，按下回车键的事件是 <Return>
+        鼠标移出事件：<Leave>
+        组件及其包含的子组件获得焦点：<FocusIn>
+        组件及其包含的子组件失去焦点：<FocusOut>
+        可以为键盘上所有非数字和字母的按键绑定事件处理方法：Shift_L、Ctrl_L、Alt_L、Prior(Page Up键)、Next(Page Down键)等
+        <Key>  键盘上任意键的单击事件，程序可通过event获取用户单击了哪个键
+        a  键盘上指定键被单击的事件。比如 a 代表a键被单击，b代表b键被单击....
+        <Shift-Up> 在Shift键被按下时按Up键。还可组合Alt和Control;类似的还有：<Shift-Left>、<Shift-Down>等
+        <Configure> 组件大小、位置改变的事件。组件改变之后的大小、位置可通过 event 的 width、height、x、y获取
+'''
+
+#示例：为鼠标移动事件绑定事件处理方法
+'''
+from tkinter import *
+
+class App:
+    def __init__(self, master):  #定义主容器
+        self.master = master
+        self.initWidgets()
+
+    def initWidgets(self):  #初始化容器
+        lb = Label(self.master, width=40, height=3)
+        lb.config(bg='lightgreen', font=('Times', 20))
+        #为鼠标移动事件绑定事件处理方法
+        lb.bind('<Motion>', self.motion)
+        #为按住左键时的鼠标移动事件绑定事件处理方法
+        lb.bind('<B1-Motion>', self.press_motion)
+        lb.pack()
+        self.show = Label(self.master, width=38, height=1)
+        self.show.config(bg='white', font=('Courier New', 20))
+        self.show.pack()
+
+    def motion(self, event):  #定义motion方法
+        self.show['text'] = "鼠标移动到： (%s %s)" % (event.x, event.y)
+        return
+
+    def press_motion(self, event):  #定义press_motion方法
+        self.show['text'] = "按住鼠标的位置为：(%s %s)" % (event.x, event.y)
+        return
+
+root = Tk()
+root.title("鼠标事件")
+App(root)
+root.mainloop()
+'''
+
+
+#改进型计算器，可以实现简单的计算功能
+
+from tkinter import *
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+        self.expr = None   #定义表达式初始值
+
+    def initWidgets(self):
+        #创建一个输入组件
+        self.show = Label(relief=SUNKEN, font=('Courier New', 24), width=25, bg='white', anchor=E)
+        #对该输入组件使用Pack()布局，放在容器顶部
+        self.show.pack(side=TOP, pady=10)
+        p = Frame(self.master)
+        p.pack(side=TOP)
+        names = ("0", "1", "2", "3"
+            , "4", "5", "6", "7", "8", "9"
+            , "+", "-", "*", "/", ".", "=")
+        for i in range(len(names)):
+            b = Button(p, text=names[i], font=('Verdana', 20), width=6)
+            b.grid(row=i // 4, column=i % 4)
+            #为鼠标左键的单击事件绑定事件处理方法
+            b.bind('<Button-1>', self.click)
+            #为鼠标左键的双击事件绑定事件处理方法
+            if b['text'] == '=': 
+                b.bind('<Double-1>', self.clean)
+    def click(self, event):  #创建click方法
+        #如果用户单击的是数字键或点号
+        if(event.widget['text'] in ('0', '1', '2', '3', '4', '5', '6', '7', '8'\
+            , '9', '.')):
+            self.show['text'] = self.show['text'] + event.widget['text']
+        #如果用户单击了运算符
+        elif(event.widget['text'] in ('+', '-', '*', '/')):
+            #如果当前表达式为None，则直接用show组件的内容和运算符进行连接
+            if self.expr is None:
+                self.expr = self.show['text'] + event.widget['text']
+            #如果当前表达式不为None，则用表达式、show组件的内容和运算符进行连接
+            else:
+                self.expr = self.expr + self.show['text'] + event.widget['text']
+            self.show['text'] = ''
+        elif(event.widget['text'] == '=' and self.expr is not None):
+            self.expr = self.expr + self.show['text']
+            print(self.expr)
+            #使用eval函数计算表达式的值
+            self.show['text'] = str(eval(self.expr))
+            self.expr = None
+    #当双击 "=" 按钮时，程序清空计算结果，将表达式设为None
+    def clean(self, event):   #创建clean方法
+        self.expr = None      #清空表达式
+        self.show['text'] = ''
+
+root = Tk()
+root.title("计算器")
+App(root)
 root.mainloop()
 
