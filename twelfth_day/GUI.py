@@ -578,5 +578,40 @@ root.mainloop()
 
 
 
+#使用compound选项：当需要为按钮(Button)或Label等组件同时指定text和image两个选项(默认image会覆盖text)，且需要组件能同时显示文本和图片时，可通过compound选项进行控制
+#compound选项支持如下属性：
+'''
+None: 图片覆盖文字
+LEFT常量(值为'left'字符串)：图片在左，文本在右
+RIGHT常量(值为'right'字符串)：图片在右，文本在左
+TOP常量(值为'right'字符串): 图片在上，文本在下
+BOTTOM常量(值为'bottom'字符串)：图片在底，文本在上
+CENTER常量(值为'center'字符串)： 文本在图片上方
+'''
+
+#示例：使用多个单选钮来控制Label的compound选项
+
+from tkinter import *
+#导入ttk
+from tkinter import ttk
+from tkinter import font
+
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        #创建一个位图
+        bm = PhotoImage(file = 'serial1.png')
+        #创建一个Entry，同时指定text和image
+        self.label = ttk.Label(self.master, text='疯狂体\n系图书',\
+            image=bm, font=('Stsong', 20, 'bold'), foreground='red')
+        self.label.bm = bm
+        #设置Label默认的compound为None
+        self.label.pack()
+        #创建Frame容器，用于装多个Radiobutton
+        f = ttk.Frame
+
+
 
 
