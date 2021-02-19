@@ -591,6 +591,7 @@ CENTER常量(值为'center'字符串)： 文本在图片上方
 
 #示例：使用多个单选钮来控制Label的compound选项
 
+'''
 from tkinter import *
 #导入ttk
 from tkinter import ttk
@@ -602,7 +603,7 @@ class App:
         self.initWidgets()
     def initWidgets(self):
         #创建一个位图
-        bm = PhotoImage(file = 'serial1.png')
+        bm = PhotoImage(file = 'D:\learning_python\\twelfth_day\serial.png')
         #创建一个Entry，同时指定text和image
         self.label = ttk.Label(self.master, text='疯狂体\n系图书',\
             image=bm, font=('Stsong', 20, 'bold'), foreground='red')
@@ -610,7 +611,35 @@ class App:
         #设置Label默认的compound为None
         self.label.pack()
         #创建Frame容器，用于装多个Radiobutton
-        f = ttk.Frame
+        f = ttk.Frame(self.master)
+        f.pack(fill=BOTH, expand=YES)
+        compounds = ('None', "LEFT", "RIGHT", "TOP", "BOTTOM", "CENTER")
+        #定义一个StringVar变量，用作绑定Radiobutton的变量
+        self.var = StringVar()
+        self.var.set('None')
+        #使用循环创建多个Radionbutton组件
+        for val in compounds:
+            rb = Radiobutton(f,
+                text = val,
+                padx = 20,
+                variable = self.var,
+                command = self.change_compound,
+                value=val).pack(side=LEFT, anchor=CENTER)
+    #实现change_compound方法，用于动态改变Label的compound选项
+    def change_compound(self):
+        self.label['compound'] = self.var.get().lower()
+
+root = Tk()
+root.title("compound测试")
+App(root)
+root.mainloop()
+'''
+
+
+#Entry 和 Text 组件
+
+
+
 
 
 
